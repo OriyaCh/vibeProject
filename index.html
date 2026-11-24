@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>משפחת כהן – ניהול מצרכים</title>
+  <style>
+    :root{--bg:#faf7f2;--paper:#fff;--ink:#242321;--muted:#777470;--line:#ece9e3;--green:#2f6f63;--green-soft:#edf5f1;--peach:#ffe8df;--peach-2:#fff0ea;--orange:#b96a32;--red:#c84d43}
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:"Heebo","Segoe UI",Arial,sans-serif} button,input,select{font:inherit} button{cursor:pointer}
+    .app{max-width:520px;min-height:100vh;margin:auto;background:var(--bg);padding:22px 16px 112px}
+    .topbar{display:flex;justify-content:space-between;align-items:flex-start;margin:2px 0 22px}.topbar>div:first-child{min-width:0}.date{color:var(--muted);font-size:13px}.sync{color:var(--green);font-size:12px;white-space:nowrap}.topbar h1{font-size:22px;margin:5px 0 0;white-space:nowrap}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(35,30,20,.03)}
+    .summary{border:0;background:var(--peach);padding:26px 20px 20px;text-align:center}.summary-icon{width:58px;height:58px;border-radius:19px;background:#f7a98b;display:grid;place-items:center;margin:-3px auto 12px;font-size:27px}.summary h2{font-size:24px;margin:8px 0 2px}.summary p{color:#8a5039;margin:0 0 18px}.primary{border:0;border-radius:13px;background:var(--green);color:#fff;height:50px;width:100%;font-weight:700}.summary .primary{font-size:17px}
+    .section-head{display:flex;justify-content:space-between;align-items:center;margin:24px 0 10px}.section-head h2{font-size:22px;margin:0}.text-button{border:0;background:none;color:var(--green);text-decoration:underline;font-weight:700}
+    .urgent{overflow:hidden}.urgent-row{display:grid;grid-template-columns:42px 1fr auto;align-items:center;padding:14px 12px;border-bottom:1px solid var(--line);gap:10px}.urgent-row:last-child{border:0}.item-icon{width:38px;height:38px;border-radius:12px;background:var(--green-soft);display:grid;place-items:center}.urgent-name{font-weight:700}.urgent-sub{color:var(--muted);font-size:13px}.badge{border-radius:20px;padding:5px 8px;font-size:12px;font-weight:700}.badge.red{background:#fff0ef;color:var(--red)}.badge.orange{background:#fff4e7;color:var(--orange)}
+    .quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.quick button{height:82px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:right;padding:14px}.quick b{display:block;margin-top:8px}.quick span{font-size:22px}
+    .status{margin-top:12px;padding:12px;color:var(--muted);font-size:13px;text-align:center}
+    .nav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);height:84px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);align-items:start;padding-top:10px}.nav button{border:0;background:none;color:#777;font-size:12px}.nav button.active{color:var(--green);font-weight:700}.nav-icon{display:block;font-size:19px;margin-bottom:2px}
+    .fab{position:absolute;right:16px;bottom:92px;border-radius:999px;border:0;height:48px;padding:0 16px;background:var(--ink);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.16)}
+    .page{display:none}.page.active{display:block}.page-title{display:flex;justify-content:space-between;align-items:center;margin:2px 0 18px}.page-title h1{font-size:27px;margin:0}.chipbar{display:flex;gap:8px;overflow:auto;padding-bottom:10px}.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;white-space:nowrap}.chip.active{background:var(--green);border-color:var(--green);color:#fff}.filters{display:flex;gap:8px;margin:8px 0 12px}.filters select,.filters input{height:42px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:0 10px}.filters input{flex:1}
+    .count{color:var(--muted);font-size:13px;margin:8px 0}.inventory{display:flex;flex-direction:column;gap:8px}.inventory-row{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:10px;padding:12px}.inventory-row h3{margin:0}.inventory-row small{color:var(--muted)}.qty{font-weight:700;min-width:58px;text-align:left}.qty button{width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:#fff}
+    .list-add{display:flex;gap:8px;margin-bottom:14px}.list-add input{flex:1;height:48px;border:1px solid var(--line);border-radius:12px;padding:0 12px}.list-add button{width:48px;border:0;border-radius:12px;background:var(--green);color:#fff}.progress{margin:8px 0 14px}.progress-meta{display:flex;justify-content:space-between;font-size:13px}.track{height:8px;background:#ebe8df;border-radius:99px;overflow:hidden;margin-top:7px}.track i{display:block;height:100%;background:var(--green);width:36%}.category{margin:16px 0 8px;font-weight:800}.shop-row{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:8px;background:#fff;border-bottom:1px solid var(--line);padding:12px}.shop-row:first-of-type{border-radius:12px 12px 0 0}.shop-row:last-of-type{border-radius:0 0 12px 12px;border-bottom:0}.check{width:21px;height:21px;border:1.5px solid #aaa;border-radius:50%;background:#fff}.check.done{background:var(--green);border-color:var(--green);color:#fff}.source{color:var(--muted);font-size:12px}.finish{position:fixed;z-index:19;bottom:84px;left:50%;transform:translateX(-50%);width:min(488px,calc(100% - 32px));height:50px}
+    .profile-grid,.settings-list{display:grid;gap:10px}.person,.setting-row{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}.person{display:flex;align-items:center;gap:12px}.avatar{width:42px;height:42px;border-radius:50%;background:var(--peach);display:grid;place-items:center;font-weight:800}.person b{display:block}.person small{color:var(--muted)}.setting-row{display:flex;justify-content:space-between;align-items:center}.toggle{width:44px;height:24px;border-radius:99px;background:#ddd;border:0;padding:3px}.toggle:after{content:"";display:block;width:18px;height:18px;border-radius:50%;background:#fff}.toggle.on{background:var(--green)}
+    .catalog-row{padding:12px;margin-bottom:8px}.catalog-row h3{margin:0}.catalog-row small{color:var(--muted)}.history{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 8px;text-align:center}.metric b{display:block;font-size:24px}.metric span{font-size:12px;color:var(--muted)}.timeline{margin-top:16px}.event{background:#fff;border-bottom:1px solid var(--line);padding:12px}.event b{display:block}.event small{color:var(--muted)}
+    .toast{position:fixed;z-index:50;bottom:102px;left:50%;transform:translateX(-50%) translateY(20px);background:#252525;color:#fff;padding:10px 16px;border-radius:999px;opacity:0;transition:.25s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(min-width:900px){.app{max-width:760px}.nav{max-width:760px}.finish{width:728px}.fab{right:calc((100% - 760px)/2 + 16px)}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section id="home" class="page active">
+      <header class="topbar"><div><div class="date" id="today"></div><h1>בוקר טוב, משפחת כהן</h1></div><div class="sync">● מסונכרן</div></header>
+      <div class="card summary"><div class="summary-icon">🛍️</div><h2 id="missingCount">חסרים 6 מצרכים</h2><p>3 נגמרו · 3 מתחת למינימום</p><button class="primary" onclick="showPage('shop')">לרשימת הקניות (14)</button></div>
+      <div class="section-head"><h2>דחוף</h2><button class="text-button" onclick="showPage('inventory')">לכל המלאי</button></div>
+      <div class="card urgent" id="urgent"></div>
+      <div class="quick"><button onclick="toast('מצב צילום יופעל בטלפון')"><span>📷</span><b>סריקת חשבונית</b></button><button onclick="showPage('inventory')"><span>✏️</span><b>עדכון מלאי</b></button></div>
+      <div class="card status" id="status">42 פריטים תקינים · עודכן לפני 5 דק׳ על ידי נועה</div>
+      <button class="fab" onclick="markMissing()">+ חסר בבית</button>
+    </section>
+
+    <section id="inventory" class="page">
+      <div class="page-title"><h1>מלאי</h1><div class="sync">● מסונכרן</div></div>
+      <div class="filters"><select id="locationFilter" onchange="renderInventory()"><option value="all">הכול</option><option value="מקרר">מקרר</option><option value="מקפיא">מקפיא</option><option value="מזווה">מזווה</option></select><input id="search" oninput="renderInventory()" placeholder="חיפוש מצרך"></div>
+      <div class="chipbar" id="categoryChips"></div>
+      <div class="count" id="inventoryCount"></div><div class="inventory" id="inventoryList"></div>
+    </section>
+
+    <section id="shop" class="page">
+      <div class="page-title"><h1>רשימת קניות</h1><div class="sync">שבועית · 24.11–30.11</div></div>
+      <div class="progress"><div class="progress-meta"><b id="shopMeta">4 מתוך 11 בעגלה</b><span id="remain">נשארו 7</span></div><div class="track"><i id="progressBar"></i></div></div>
+      <div class="list-add"><input id="addItem" placeholder="הוספת פריט לרשימה"><button onclick="addShoppingItem()">＋</button></div>
+      <div id="shoppingList"></div><button class="primary finish" onclick="finishShopping()">סיימתי לקנות</button>
+    </section>
+
+    <section id="catalog" class="page">
+      <div class="page-title"><h1>קטלוג מצרכים</h1><button class="primary" style="width:auto;padding:0 14px" onclick="toast('פתיחת טופס מוצר חדש')">מצרך חדש</button></div>
+      <input id="catalogSearch" oninput="renderCatalog()" style="width:100%;height:46px;border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:12px" placeholder="חיפוש מצרך">
+      <div id="catalogList"></div>
+    </section>
+
+    <section id="profile" class="page">
+      <div class="page-title"><h1>פרופיל משפחה</h1><div class="sync">4 בני בית</div></div>
+      <div class="card" style="padding:16px;margin-bottom:16px">הכמויות ברשימה השבועית ובמלאי מחושבות לפי הרכב המשפחה.</div>
+      <div class="profile-grid" id="people"></div>
+      <button class="primary" style="margin-top:12px" onclick="toast('קישור הזמנה הועתק')">שליחת קישור הזמנה</button>
+    </section>
+
+    <section id="history" class="page">
+      <div class="page-title"><h1>היסטוריה ודוחות</h1><div class="sync">נובמבר עד היום</div></div>
+      <div class="history"><div class="metric"><b>4</b><span>קניות</span></div><div class="metric"><b>112</b><span>פריטים נקנו</span></div><div class="metric"><b>9</b><span>פעמים נגמר</span></div></div>
+      <div class="timeline"><div class="event"><b>חלב 3% סומן כנגמר</b><small>היום, 08:12 · נועה</small></div><div class="event"><b>אורז בסמטי: 2 ← 1.5 ק״ג</b><small>היום, 07:40 · אבי</small></div><div class="event"><b>קנייה אושרה · 18 פריטים עודכנו</b><small>אתמול, 19:05 · דנה</small></div></div>
+    </section>
+
+    <section id="settings" class="page">
+      <div class="page-title"><h1>הגדרות</h1></div>
+      <div class="settings-list">
+        <button class="setting-row" style="width:100%;text-align:right" onclick="showPage('catalog')"><div><b>קטלוג מצרכים</b><br><small>86 מצרכים, יחידות ומינימום</small></div><span>‹</span></button>
+        <button class="setting-row" style="width:100%;text-align:right" onclick="showPage('profile')"><div><b>פרופיל משפחה</b><br><small>4 בני בית</small></div><span>‹</span></button>
+        <button class="setting-row" style="width:100%;text-align:right" onclick="showPage('history')"><div><b>היסטוריה ודוחות</b><br><small>קניות ועדכוני מלאי</small></div><span>‹</span></button>
+        <div class="setting-row"><div><b>מחובר לגיליון משותף</b><br><small>מצרכים – משפחת כהן</small></div><button class="toggle on" aria-label="מחובר"></button></div>
+        <div class="setting-row"><div><b>רשימה שבועית חדשה</b><br><small>כל יום חמישי ב־06:00</small></div><button class="toggle on"></button></div>
+        <div class="setting-row"><div><b>משהו נגמר בבית</b><br><small>התראה לבני הבית</small></div><button class="toggle on"></button></div>
+        <div class="setting-row"><div><b>תוקף קרוב</b><br><small>3 ימים לפני התוקף</small></div><button class="toggle"></button></div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="nav">
+    <button class="active" data-page="home" onclick="showPage('home')"><span class="nav-icon">⌂</span>בית</button>
+    <button data-page="inventory" onclick="showPage('inventory')"><span class="nav-icon">▦</span>מלאי</button>
+    <button data-page="shop" onclick="showPage('shop')"><span class="nav-icon">🛒</span>קניות <b id="navCount">14</b></button>
+    <button onclick="toast('מצב צילום יופעל בטלפון')"><span class="nav-icon">▣</span>סריקה</button>
+    <button data-page="settings" onclick="showPage('settings')"><span class="nav-icon">···</span>עוד</button>
+  </nav>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const state={
+      inventory:[
+        {name:'חלב 3%',category:'חלב וביצים',location:'מקרר',qty:1,min:2,unit:'ליטר',status:'מתחת למינימום',expiry:''},
+        {name:'ביצים L',category:'חלב וביצים',location:'מקרר',qty:0,min:6,unit:'יחידות',status:'נגמר',expiry:''},
+        {name:'יוגורט טבעי',category:'חלב וביצים',location:'מקרר',qty:4,min:2,unit:'יחידות',status:'תוקף קרוב',expiry:'25.11'},
+        {name:'חזה עוף',category:'קפואים',location:'מקפיא',qty:.5,min:1,unit:'ק״ג',status:'מתחת למינימום',expiry:''},
+        {name:'אורז בסמטי',category:'מזווה ויבשים',location:'מזווה',qty:1.5,min:1,unit:'ק״ג',status:'תקין',expiry:''},
+        {name:'עגבניות',category:'ירקות ופירות',location:'מקרר',qty:2,min:1,unit:'ק״ג',status:'תקין',expiry:''},
+        {name:'פסטה פנה',category:'מזווה ויבשים',location:'מזווה',qty:3,min:2,unit:'חבילות',status:'תקין',expiry:''}
+      ],
+      shop:[
+        {name:'חלב 3%',qty:'2 × 1 ליטר',category:'חלב וביצים',source:'אוטומטי',done:false},
+        {name:'ביצים L',qty:'12 יחידות',category:'חלב וביצים',source:'אוטומטי',done:false},
+        {name:'גבינה צהובה פרוסה',qty:'1 × 200 גרם',category:'חלב וביצים',source:'ידני',done:false},
+        {name:'מלפפונים',qty:'1 ק״ג',category:'ירקות ופירות',source:'אוטומטי',done:false},
+        {name:'בננות',qty:'1 אשכול',category:'ירקות ופירות',source:'ידני',done:false},
+        {name:'במבה',qty:'3 יחידות',category:'מזווה ויבשים',source:'ידני',done:false},
+        {name:'חזה עוף',qty:'1 ק״ג',category:'קפואים',source:'אוטומטי',done:false},
+        {name:'עגבניות',qty:'1 ק״ג',category:'בעגלה',source:'אוטומטי',done:true},
+        {name:'שמן זית',qty:'1 בקבוק',category:'בעגלה',source:'אוטומטי',done:true},
+        {name:'לחם מחמצת',qty:'2 כיכרות',category:'בעגלה',source:'אוטומטי',done:true},
+        {name:'נייר טואלט',qty:'1 חבילה',category:'בעגלה',source:'ידני',done:true}
+      ]
+    };
+    const saved=localStorage.getItem('grocery-state'); if(saved){try{Object.assign(state,JSON.parse(saved))}catch(e){}}
+    function save(){localStorage.setItem('grocery-state',JSON.stringify(state))}
+    function showPage(id){
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');
+      document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+      window.scrollTo(0,0);
+    }
+    function toast(text){const t=document.getElementById('toast');t.textContent=text;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),2200)}
+    function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]))}
+    function renderUrgent(){
+      const urg=state.inventory.filter(i=>i.status==='נגמר'||i.status==='תוקף קרוב'||i.status==='מתחת למינימום').slice(0,3);
+      document.getElementById('urgent').innerHTML=urg.map(i=>`<div class="urgent-row"><div class="item-icon">▤</div><div><div class="urgent-name">${esc(i.name)}</div><div class="urgent-sub">${i.status==='נגמר'?`נגמר · ${i.qty===0?'מלאי ריק':''}`:i.status==='תוקף קרוב'?`בתוקף עד ${i.expiry}`:'מתחת למינימום'}</div></div><span class="badge ${i.status==='נגמר'?'red':'orange'}">${esc(i.status)}</span></div>`).join('');
+    }
+    function renderInventory(){
+      const loc=document.getElementById('locationFilter').value,q=(document.getElementById('search').value||'').trim();
+      const items=state.inventory.filter(i=>loc==='all'||i.location===loc).filter(i=>!q||i.name.includes(q));
+      document.getElementById('inventoryCount').textContent=`${items.length} פריטים · ${items.filter(i=>i.qty<=i.min).length} חסרים`;
+      document.getElementById('inventoryList').innerHTML=items.map((i,idx)=>`<div class="card inventory-row"><div class="item-icon">▤</div><div><h3>${esc(i.name)}</h3><small>${esc(i.location)} · ${i.status}</small></div><div class="qty"><b>${i.qty} ${esc(i.unit)}</b><div style="margin-top:6px"><button onclick="changeQty('${esc(i.name)}',-1)">−</button> <button onclick="changeQty('${esc(i.name)}',1)">＋</button></div></div></div>`).join('');
+    }
+    function changeQty(name,d){
+      const i=state.inventory.find(x=>x.name===name);if(!i)return;i.qty=Math.max(0,+(i.qty+d).toFixed(1));i.status=i.qty===0?'נגמר':i.qty<i.min?'מתחת למינימום':'תקין';save();renderInventory();renderUrgent();toast(`${i.name} עודכן ל-${i.qty} ${i.unit}`);
+    }
+    function markMissing(){
+      const i=state.inventory.find(x=>x.qty===0||x.status==='נגמר')||state.inventory[0];i.qty=0;i.status='נגמר';save();renderUrgent();renderInventory();toast(`${i.name} סומן כנגמר`);
+    }
+    function renderShopping(){
+      const groups={};state.shop.forEach(i=>{if(!i.done)(groups[i.category]||(groups[i.category]=[])).push(i)});
+      let html='';
+      Object.entries(groups).forEach(([cat,items])=>{html+=`<div class="category">· ${esc(cat)} · ${items.length}</div>`+items.map(i=>`<div class="shop-row"><button class="check" aria-label="סימון" onclick="toggleShop('${esc(i.name)}')"></button><div><b>${esc(i.name)}</b><div class="source">${esc(i.qty)} · ${esc(i.source)}</div></div></div>`).join('')});
+      const done=state.shop.filter(i=>i.done);if(done.length){html+=`<div class="category">בעגלה · ${done.length}</div>`+done.map(i=>`<div class="shop-row"><button class="check done" onclick="toggleShop('${esc(i.name)}')">✓</button><div><b>${esc(i.name)}</b><div class="source">${esc(i.qty)} · בעגלה</div></div></div>`).join('')}
+      document.getElementById('shoppingList').innerHTML=html;
+      const total=state.shop.length,left=state.shop.filter(i=>!i.done).length,doneCount=total-left;
+      document.getElementById('shopMeta').textContent=`${doneCount} מתוך ${total} בעגלה`;document.getElementById('remain').textContent=`נשארו ${left}`;document.getElementById('progressBar').style.width=`${total?doneCount/total*100:0}%`;document.getElementById('navCount').textContent=left;
+    }
+    function toggleShop(name){const i=state.shop.find(x=>x.name===name);if(i){i.done=!i.done;save();renderShopping()}}
+    function addShoppingItem(){
+      const el=document.getElementById('addItem'),name=el.value.trim();if(!name)return;
+      state.shop.push({name,qty:'כמות חדשה',category:'ידני',source:'ידני',done:false});el.value='';save();renderShopping();toast(`${name} נוסף לרשימה`);
+    }
+    function finishShopping(){save();toast('הרשימה נשמרה והקנייה הושלמה');state.shop.forEach(i=>i.done=true);save();renderShopping()}
+    function renderCatalog(){
+      const q=(document.getElementById('catalogSearch').value||'').trim();
+      const items=state.inventory.filter(i=>!q||i.name.includes(q));
+      document.getElementById('catalogList').innerHTML=items.map(i=>`<div class="card catalog-row"><h3>${esc(i.name)}</h3><small>${esc(i.category)} · ${esc(i.unit)} · מינימום ${i.min} · ${esc(i.location)}</small></div>`).join('');
+    }
+    function renderPeople(){
+      document.getElementById('people').innerHTML=[['ד','דנה','מבוגרת · 42 · אחראי/ת קניות'],['א','אבי','מבוגר · 44'],['י','יונתן','נער · 15'],['נ','נועה','ילדה · 9']].map(p=>`<div class="person"><div class="avatar">${p[0]}</div><div><b>${p[1]}</b><small>${p[2]}</small></div></div>`).join('');
+    }
+    const fmt=new Intl.DateTimeFormat('he-IL',{weekday:'long',day:'numeric',month:'long'});document.getElementById('today').textContent=fmt.format(new Date());
+    document.querySelectorAll('.toggle').forEach(b=>b.onclick=()=>b.classList.toggle('on'));
+    renderUrgent();renderInventory();renderShopping();renderCatalog();renderPeople();
+  </script>
+</body>
+</html>
