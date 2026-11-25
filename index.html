@@ -1,175 +1,1019 @@
 <!doctype html>
 <html lang="he" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>משפחת כהן – ניהול מצרכים</title>
-  <style>
-    :root{--bg:#faf7f2;--paper:#fff;--ink:#242321;--muted:#777470;--line:#ece9e3;--green:#2f6f63;--green-soft:#edf5f1;--peach:#ffe8df;--peach-2:#fff0ea;--orange:#b96a32;--red:#c84d43}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:"Heebo","Segoe UI",Arial,sans-serif} button,input,select{font:inherit} button{cursor:pointer}
-    .app{max-width:520px;min-height:100vh;margin:auto;background:var(--bg);padding:22px 16px 112px}
-    .topbar{display:flex;justify-content:space-between;align-items:flex-start;margin:2px 0 22px}.topbar>div:first-child{min-width:0}.date{color:var(--muted);font-size:13px}.sync{color:var(--green);font-size:12px;white-space:nowrap}.topbar h1{font-size:22px;margin:5px 0 0;white-space:nowrap}
-    .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(35,30,20,.03)}
-    .summary{border:0;background:var(--peach);padding:26px 20px 20px;text-align:center}.summary-icon{width:58px;height:58px;border-radius:19px;background:#f7a98b;display:grid;place-items:center;margin:-3px auto 12px;font-size:27px}.summary h2{font-size:24px;margin:8px 0 2px}.summary p{color:#8a5039;margin:0 0 18px}.primary{border:0;border-radius:13px;background:var(--green);color:#fff;height:50px;width:100%;font-weight:700}.summary .primary{font-size:17px}
-    .section-head{display:flex;justify-content:space-between;align-items:center;margin:24px 0 10px}.section-head h2{font-size:22px;margin:0}.text-button{border:0;background:none;color:var(--green);text-decoration:underline;font-weight:700}
-    .urgent{overflow:hidden}.urgent-row{display:grid;grid-template-columns:42px 1fr auto;align-items:center;padding:14px 12px;border-bottom:1px solid var(--line);gap:10px}.urgent-row:last-child{border:0}.item-icon{width:38px;height:38px;border-radius:12px;background:var(--green-soft);display:grid;place-items:center}.urgent-name{font-weight:700}.urgent-sub{color:var(--muted);font-size:13px}.badge{border-radius:20px;padding:5px 8px;font-size:12px;font-weight:700}.badge.red{background:#fff0ef;color:var(--red)}.badge.orange{background:#fff4e7;color:var(--orange)}
-    .quick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.quick button{height:82px;border:1px solid var(--line);border-radius:16px;background:#fff;text-align:right;padding:14px}.quick b{display:block;margin-top:8px}.quick span{font-size:22px}
-    .status{margin-top:12px;padding:12px;color:var(--muted);font-size:13px;text-align:center}
-    .nav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);height:84px;background:rgba(255,255,255,.96);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);align-items:start;padding-top:10px}.nav button{border:0;background:none;color:#777;font-size:12px}.nav button.active{color:var(--green);font-weight:700}.nav-icon{display:block;font-size:19px;margin-bottom:2px}
-    .fab{position:absolute;right:16px;bottom:92px;border-radius:999px;border:0;height:48px;padding:0 16px;background:var(--ink);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.16)}
-    .page{display:none}.page.active{display:block}.page-title{display:flex;justify-content:space-between;align-items:center;margin:2px 0 18px}.page-title h1{font-size:27px;margin:0}.chipbar{display:flex;gap:8px;overflow:auto;padding-bottom:10px}.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;white-space:nowrap}.chip.active{background:var(--green);border-color:var(--green);color:#fff}.filters{display:flex;gap:8px;margin:8px 0 12px}.filters select,.filters input{height:42px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:0 10px}.filters input{flex:1}
-    .count{color:var(--muted);font-size:13px;margin:8px 0}.inventory{display:flex;flex-direction:column;gap:8px}.inventory-row{display:grid;grid-template-columns:44px 1fr auto;align-items:center;gap:10px;padding:12px}.inventory-row h3{margin:0}.inventory-row small{color:var(--muted)}.qty{font-weight:700;min-width:58px;text-align:left}.qty button{width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:#fff}
-    .list-add{display:flex;gap:8px;margin-bottom:14px}.list-add input{flex:1;height:48px;border:1px solid var(--line);border-radius:12px;padding:0 12px}.list-add button{width:48px;border:0;border-radius:12px;background:var(--green);color:#fff}.progress{margin:8px 0 14px}.progress-meta{display:flex;justify-content:space-between;font-size:13px}.track{height:8px;background:#ebe8df;border-radius:99px;overflow:hidden;margin-top:7px}.track i{display:block;height:100%;background:var(--green);width:36%}.category{margin:16px 0 8px;font-weight:800}.shop-row{display:grid;grid-template-columns:28px 1fr auto;align-items:center;gap:8px;background:#fff;border-bottom:1px solid var(--line);padding:12px}.shop-row:first-of-type{border-radius:12px 12px 0 0}.shop-row:last-of-type{border-radius:0 0 12px 12px;border-bottom:0}.check{width:21px;height:21px;border:1.5px solid #aaa;border-radius:50%;background:#fff}.check.done{background:var(--green);border-color:var(--green);color:#fff}.source{color:var(--muted);font-size:12px}.finish{position:fixed;z-index:19;bottom:84px;left:50%;transform:translateX(-50%);width:min(488px,calc(100% - 32px));height:50px}
-    .profile-grid,.settings-list{display:grid;gap:10px}.person,.setting-row{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px}.person{display:flex;align-items:center;gap:12px}.avatar{width:42px;height:42px;border-radius:50%;background:var(--peach);display:grid;place-items:center;font-weight:800}.person b{display:block}.person small{color:var(--muted)}.setting-row{display:flex;justify-content:space-between;align-items:center}.toggle{width:44px;height:24px;border-radius:99px;background:#ddd;border:0;padding:3px}.toggle:after{content:"";display:block;width:18px;height:18px;border-radius:50%;background:#fff}.toggle.on{background:var(--green)}
-    .catalog-row{padding:12px;margin-bottom:8px}.catalog-row h3{margin:0}.catalog-row small{color:var(--muted)}.history{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.metric{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 8px;text-align:center}.metric b{display:block;font-size:24px}.metric span{font-size:12px;color:var(--muted)}.timeline{margin-top:16px}.event{background:#fff;border-bottom:1px solid var(--line);padding:12px}.event b{display:block}.event small{color:var(--muted)}
-    .toast{position:fixed;z-index:50;bottom:102px;left:50%;transform:translateX(-50%) translateY(20px);background:#252525;color:#fff;padding:10px 16px;border-radius:999px;opacity:0;transition:.25s}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    @media(min-width:900px){.app{max-width:760px}.nav{max-width:760px}.finish{width:728px}.fab{right:calc((100% - 760px)/2 + 16px)}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAF7F2">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>מצרכים בבית</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FAF7F2;--card:#fff;--ink:#1F2A24;--muted:#56625B;--green:#2E7D5B;--green-d:#1F5E43;--green-i:#1F6B4A;--green-s:#E2F1E8;--peach:#FDEBDD;--peach-2:#F2A579;--peach-i:#8A3F14;--red:#B42318;--red-s:#FDE4E1;--orange:#9A4A00;--orange-s:#FFEBD3;--sand:#F3EEE6;--line:#E6DFD3;--line-2:#EFE9DF;--chip:#D6CEC1;--field:#8E978F;--warn-bg:#FFF6EC;--warn-b:#B8661A;--cam:#24302A;--snack:#1F2A24;--shadow:0 1px 2px rgba(31,42,36,.06),0 2px 8px rgba(31,42,36,.06);--float:0 6px 20px rgba(31,42,36,.14);
+--c-green:#E2F1E8;--c-blue:#E8EEFB;--c-sand:#F6EEDC;--c-ice:#E3F1F6;--c-pink:#F4E8F2;--c-peach:#FDEBDD;--c-lilac:#ECE8FB;--c-grey:#F3EEE6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121815;--card:#1C2420;--ink:#EDF2EE;--muted:#A3AFA8;--green:#2F8A63;--green-d:#8FD3B0;--green-i:#8FD3B0;--green-s:#1F3A2D;--peach:#3A281D;--peach-2:#E8996C;--peach-i:#F3C2A2;--red:#FF8B7B;--red-s:#3D1E1B;--orange:#FFB46A;--orange-s:#3B2A16;--sand:#252E2A;--line:#2E3934;--line-2:#28312D;--chip:#3B4842;--field:#6E7A73;--warn-bg:#2E2418;--warn-b:#D08A3E;--cam:#0B0F0D;--snack:#EDF2EE;--shadow:0 1px 2px rgba(0,0,0,.3);
+--c-green:#1F3A2D;--c-blue:#1F2940;--c-sand:#352E1F;--c-ice:#1B3139;--c-pink:#3A2436;--c-peach:#3A281D;--c-lilac:#2B2742;--c-grey:#252E2A}}
+:root[data-theme="dark"]{--bg:#121815;--card:#1C2420;--ink:#EDF2EE;--muted:#A3AFA8;--green:#2F8A63;--green-d:#8FD3B0;--green-i:#8FD3B0;--green-s:#1F3A2D;--peach:#3A281D;--peach-2:#E8996C;--peach-i:#F3C2A2;--red:#FF8B7B;--red-s:#3D1E1B;--orange:#FFB46A;--orange-s:#3B2A16;--sand:#252E2A;--line:#2E3934;--line-2:#28312D;--chip:#3B4842;--field:#6E7A73;--warn-bg:#2E2418;--warn-b:#D08A3E;--cam:#0B0F0D;--snack:#EDF2EE;--shadow:0 1px 2px rgba(0,0,0,.3);
+--c-green:#1F3A2D;--c-blue:#1F2940;--c-sand:#352E1F;--c-ice:#1B3139;--c-pink:#3A2436;--c-peach:#3A281D;--c-lilac:#2B2742;--c-grey:#252E2A}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Heebo,Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--green-d)}
+svg{flex-shrink:0}
+.app{max-width:560px;margin:0 auto;min-height:100vh;padding:16px 16px 120px;display:flex;flex-direction:column;gap:16px}
+.app.store{background:var(--card)}
+.app.has-footer{padding-bottom:196px}
+.hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px}
+.hdr .col{display:flex;flex-direction:column;min-width:0;flex:1}
+h1{margin:0;font-size:28px;line-height:36px;font-weight:700}
+h1.sm{font-size:20px;line-height:28px;font-weight:600}
+h2{margin:0;font-size:20px;font-weight:600}
+h3.grp{margin:0;font-size:14px;font-weight:600;color:var(--muted)}
+.sub{font-size:14px;color:var(--muted)}
+.sync{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--green-i);white-space:nowrap}
+.sync.off{color:var(--orange)} .sync.err{color:var(--red)}
+.back{width:48px;height:48px;display:flex;align-items:center;justify-content:center;border:0;background:none;margin-right:-12px;border-radius:12px}
+.card{background:var(--card);border-radius:16px;box-shadow:var(--shadow)}
+.list{background:var(--card);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;min-height:64px;padding:8px 12px 8px 16px;border:0;border-bottom:1px solid var(--line-2);background:var(--card);width:100%;text-align:right;text-decoration:none;color:var(--ink)}
+.row:last-child{border-bottom:0}
+.row .t{display:flex;flex-direction:column;flex:1;min-width:0}
+.row .t b{font-size:16px;font-weight:600}
+.row .t span{font-size:14px;color:var(--muted)}
+.ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--ink)}
+.ico.lg{width:44px;height:44px}
+.tag{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:999px;font-size:14px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.tag.out{background:var(--red-s);color:var(--red)} .tag.warn{background:var(--orange-s);color:var(--orange)} .tag.ok{background:var(--green-s);color:var(--green-i)} .tag.auto{background:var(--sand);color:var(--muted);font-weight:500} .tag.man{background:var(--peach);color:var(--peach-i);font-weight:500}
+.btn{height:48px;border-radius:12px;border:1.5px solid var(--green);background:var(--card);color:var(--green-d);font-size:16px;font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;text-decoration:none}
+.btn.pri{background:var(--green);border-color:var(--green);color:#fff}
+.btn.big{height:56px;width:100%}
+.btn.ghost{border-color:var(--chip);color:var(--ink)}
+.btn.danger{border-color:var(--red);color:var(--red)}
+.btn.link{border:0;background:none;text-decoration:underline}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.w{width:100%}
+.sq{width:48px;height:48px;border:0;border-radius:12px;background:var(--sand);display:flex;align-items:center;justify-content:center}
+.seg{height:48px;background:var(--sand);border-radius:12px;padding:4px;display:grid;gap:4px;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+.seg button{border:0;border-radius:9px;background:transparent;color:var(--muted);font-size:16px;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(31,42,36,.1)}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:0 16px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;height:40px;padding:0 14px;border:1.5px solid var(--chip);border-radius:999px;background:var(--card);font-size:14px;font-weight:500;display:flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{border-color:var(--green);background:var(--green-s);color:var(--green-d);font-weight:600}
+.field{height:48px;border-radius:12px;background:var(--card);border:1.5px solid var(--field);display:flex;align-items:center;gap:8px;padding:0 12px}
+.field input{flex:1;border:0;outline:0;background:transparent;font-size:16px;min-width:0;height:100%}
+.field:focus-within{border-color:var(--green);box-shadow:0 0 0 3px var(--green-s)}
+.fab{position:fixed;z-index:20;left:max(16px,calc(50% - 264px));bottom:calc(100px + env(safe-area-inset-bottom));height:56px;padding:0 20px 0 22px;border:0;border-radius:999px;background:var(--peach-2);color:#1F2A24;font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:var(--float)}
+.nav{position:fixed;z-index:30;bottom:0;left:0;right:0;height:calc(84px + env(safe-area-inset-bottom));padding-bottom:calc(12px + env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));max-width:560px;margin:0 auto}
+.nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-decoration:none;color:var(--muted);position:relative;font-size:14px;font-weight:500}
+.nav a .pill{width:56px;height:32px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.nav a.on{color:var(--green-d);font-weight:700} .nav a.on .pill{background:var(--green-s)}
+.nav .badge{position:absolute;top:6px;left:calc(50% - 34px);min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:var(--red);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.footer{position:fixed;z-index:25;left:0;right:0;bottom:calc(84px + env(safe-area-inset-bottom));max-width:560px;margin:0 auto;padding:12px 16px;background:var(--bg);border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.app.store~#footer .footer{background:var(--card)}
+.snack{position:fixed;z-index:60;left:16px;right:16px;max-width:528px;margin:0 auto;bottom:calc(100px + env(safe-area-inset-bottom));background:var(--snack);color:var(--bg);border-radius:12px;padding:4px 8px 4px 16px;min-height:56px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:var(--float);transform:translateY(20px);opacity:0;pointer-events:none;transition:.2s}
+.snack.show{transform:none;opacity:1;pointer-events:auto}
+.snack button{height:48px;padding:0 12px;border:0;background:transparent;color:#9FE0BE;font-size:16px;font-weight:700}
+:root[data-theme="dark"] .snack button{color:var(--green)}
+.scrim{position:fixed;inset:0;z-index:70;background:rgba(18,24,21,.45);display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.sheet{background:var(--card);border-radius:24px 24px 0 0;padding:12px 16px calc(24px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:12px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;box-shadow:var(--float)}
+.sheet .grab{align-self:center;width:40px;height:4px;border-radius:4px;background:var(--chip);flex-shrink:0}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:14px;font-weight:600;color:var(--muted)}
+.form label.full{grid-column:1/-1}
+.form input,.form select,.form textarea{height:48px;border-radius:12px;border:1.5px solid var(--field);background:var(--card);padding:0 12px;font-size:16px;font-weight:400;color:var(--ink);width:100%}
+.form textarea{height:auto;min-height:96px;padding:10px 12px}
+.form input:focus,.form select:focus,.form textarea:focus{outline:0;border-color:var(--green);box-shadow:0 0 0 3px var(--green-s)}
+.chk{display:flex!important;flex-direction:row!important;align-items:center;gap:8px;color:var(--ink)!important;font-weight:500!important}
+.chk input{width:22px;height:22px;accent-color:var(--green)}
+.switch{width:52px;height:32px;border-radius:999px;border:0;background:var(--field);position:relative;padding:0;flex-shrink:0}
+.switch::after{content:"";position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:999px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:.15s}
+.switch[aria-checked="true"]{background:var(--green)} .switch[aria-checked="true"]::after{right:24px}
+.box{width:28px;height:28px;border-radius:8px;border:2px solid #6B746E;background:var(--card);display:flex;align-items:center;justify-content:center}
+.box.on{border:0;background:var(--green)}
+.banner{border-radius:16px;padding:12px 16px;display:flex;gap:12px;align-items:center;font-size:14px}
+.banner.peach{background:var(--peach);color:var(--peach-i)} .banner.green{background:var(--green-s);color:var(--green-i)} .banner.red{background:var(--red-s);color:var(--red)}
+.banner .t{flex:1;display:flex;flex-direction:column;gap:2px}
+.banner b{color:var(--ink);font-size:16px}
+.empty{text-align:center;padding:32px 16px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.empty .big{width:72px;height:72px;border-radius:24px;display:flex;align-items:center;justify-content:center}
+.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.metric{background:var(--card);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:2px}
+.metric b{font-size:28px;font-weight:700} .metric span{font-size:14px;color:var(--muted)}
+.qtyline{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.qty{font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}
+.qty small{font-size:16px;font-weight:400;color:var(--muted)}
+.progress{height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--green);border-radius:999px;transition:width .2s}
+.cam{height:260px;border-radius:16px;background:var(--cam);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;border:0;width:100%}
+.cam .c{position:absolute;width:32px;height:32px;border:0 solid var(--peach-2)}
+.cam img{max-width:100%;max-height:100%;opacity:.85}
+.scanline{position:absolute;left:10%;right:10%;height:3px;background:var(--peach-2);box-shadow:0 0 12px var(--peach-2);animation:scan 1.6s ease-in-out infinite alternate}
+@keyframes scan{from{top:12%}to{top:86%}}
+.paper{width:150px;height:200px;background:#F3EEE6;border-radius:4px;display:flex;flex-direction:column;gap:10px;padding:18px 16px;opacity:.9}
+.paper i{height:6px;background:#CFC7B9;border-radius:4px;display:block}
+.rline{border-radius:16px;padding:10px 12px 10px 16px;display:flex;gap:12px;align-items:center;background:var(--card);border:1.5px solid var(--line)}
+.rline.unrec{flex-direction:column;align-items:stretch;background:var(--warn-bg);border:2px dashed var(--warn-b);padding:12px 16px}
+.rline.irr{background:var(--sand);border-color:transparent;padding:8px 8px 8px 16px}
+.dot{width:32px;height:32px;border-radius:999px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.counter{min-height:56px;border-radius:12px;border:1.5px solid var(--line);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px}
+.counter b{display:flex;align-items:center;gap:4px;font-size:20px}
+.counter span{font-size:14px;font-weight:500}
+table.coef{width:100%;border-collapse:collapse;font-size:14px}
+table.coef th,table.coef td{padding:6px 4px;border-bottom:1px solid var(--line-2);text-align:center}
+table.coef th:first-child,table.coef td:first-child{text-align:right}
+table.coef input{width:52px;height:36px;border:1.5px solid var(--field);border-radius:8px;background:var(--card);text-align:center;font-size:14px}
+.skel{background:linear-gradient(90deg,var(--sand),var(--line-2),var(--sand));background-size:200% 100%;animation:sk 1.2s infinite;border-radius:16px;height:88px}
+@keyframes sk{to{background-position:-200% 0}}
+.hide{display:none!important}
+.mono{font-variant-numeric:tabular-nums}
+.row.store{min-height:72px}.row.store .t b{font-size:20px}
+@media (min-width:900px){.app{max-width:760px}.nav,.footer{max-width:760px}.fab{left:calc(50% - 364px)}.snack{max-width:728px}}
+</style>
 </head>
 <body>
-  <main class="app">
-    <section id="home" class="page active">
-      <header class="topbar"><div><div class="date" id="today"></div><h1>בוקר טוב, משפחת כהן</h1></div><div class="sync">● מסונכרן</div></header>
-      <div class="card summary"><div class="summary-icon">🛍️</div><h2 id="missingCount">חסרים 6 מצרכים</h2><p>3 נגמרו · 3 מתחת למינימום</p><button class="primary" onclick="showPage('shop')">לרשימת הקניות (14)</button></div>
-      <div class="section-head"><h2>דחוף</h2><button class="text-button" onclick="showPage('inventory')">לכל המלאי</button></div>
-      <div class="card urgent" id="urgent"></div>
-      <div class="quick"><button onclick="toast('מצב צילום יופעל בטלפון')"><span>📷</span><b>סריקת חשבונית</b></button><button onclick="showPage('inventory')"><span>✏️</span><b>עדכון מלאי</b></button></div>
-      <div class="card status" id="status">42 פריטים תקינים · עודכן לפני 5 דק׳ על ידי נועה</div>
-      <button class="fab" onclick="markMissing()">+ חסר בבית</button>
-    </section>
+<main class="app" id="app"></main>
+<div id="footer"></div>
+<div id="fab"></div>
+<nav class="nav" id="nav" aria-label="ניווט ראשי"></nav>
+<div class="snack" id="snack" role="status"><span id="snackText"></span><button id="snackBtn" class="hide">ביטול</button></div>
+<div id="sheet"></div>
+<input type="file" id="fileCam" accept="image/*" capture="environment" class="hide">
+<input type="file" id="fileAny" accept="image/*,application/pdf" class="hide">
 
-    <section id="inventory" class="page">
-      <div class="page-title"><h1>מלאי</h1><div class="sync">● מסונכרן</div></div>
-      <div class="filters"><select id="locationFilter" onchange="renderInventory()"><option value="all">הכול</option><option value="מקרר">מקרר</option><option value="מקפיא">מקפיא</option><option value="מזווה">מזווה</option></select><input id="search" oninput="renderInventory()" placeholder="חיפוש מצרך"></div>
-      <div class="chipbar" id="categoryChips"></div>
-      <div class="count" id="inventoryCount"></div><div class="inventory" id="inventoryList"></div>
-    </section>
+<script>
+/* ================== קבועים ואייקונים ================== */
+const I={
+ home:'M3 10.5 12 3l9 7.5 M5 9.5V21h14V9.5 M10 21v-6h4v6',inv:'M21 8 12 3 3 8v8l9 5 9-5z M3 8l9 5 9-5 M12 13v8',bag:'M5 7h14l-1.5 12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2z M9 7V5a3 3 0 0 1 6 0v2',
+ receipt:'M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z M9 8h6 M9 12h6',menu:'M4 6h16 M4 12h16 M4 18h16',plus:'M12 5v14 M5 12h14',minus:'M5 12h14',check:'M5 12.5l4.5 4.5L19 7',
+ chevL:'M15 6l-6 6 6 6',back:'M5 12h14 M13 6l6 6-6 6',search:'M4 11a7 7 0 1 0 14 0a7 7 0 1 0-14 0 M20 20l-4-4',cloud:'M7 18a5 5 0 1 1 1-9.9A6 6 0 0 1 19 10a4 4 0 0 1 0 8z M9 13l2 2 4-4',
+ cloudOff:'M7 18a5 5 0 1 1 1-9.9A6 6 0 0 1 19 10a4 4 0 0 1 0 8z M4 4l16 16',x:'M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0 M9 9l6 6 M15 9l-6 6',clock:'M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0 M12 7v5l3 2',
+ down:'M12 5v10 M8 11l4 4 4-4',auto:'M21 12a9 9 0 1 1-3-6.7 M21 4v5h-5',pen:'M4 20h4L19 9l-4-4L4 16z',q:'M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6 M12 17v.5',
+ camera:'M4 8h3l2-3h6l2 3h3v11H4z M9 13a3 3 0 1 0 6 0a3 3 0 1 0-6 0',sun:'M12 3v2 M12 19v2 M3 12h2 M19 12h2 M5.6 5.6l1.4 1.4 M17 17l1.4 1.4 M5.6 18.4 7 17 M17 7l1.4-1.4 M8 12a4 4 0 1 0 8 0a4 4 0 1 0-8 0',
+ split:'M4 4h16v16H4z M4 12h16',okc:'M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0 M8 12.5l3 3 5-6',sheet:'M4 4h16v16H4z M4 10h16 M4 15h16 M10 4v16',list:'M4 6h16 M4 12h16 M4 18h10',
+ people:'M9 11a4 4 0 1 0 0-8a4 4 0 1 0 0 8 M2 21a7 7 0 0 1 14 0 M17 11a3 3 0 1 0 0-6 M22 21a6 6 0 0 0-4-5.6',hist:'M3 12a9 9 0 1 0 3-6.7 M3 4v5h5 M12 7v5l3 2',link:'M9 12h6 M10 7H7a5 5 0 0 0 0 10h3 M14 7h3a5 5 0 0 1 0 10h-3',
+ more:'M5 12h.01 M12 12h.01 M19 12h.01',trash:'M4 7h16 M9 7V4h6v3 M6 7l1 13h10l1-13',next:'M5 12h14 M13 6l-6 6 6 6',dl:'M12 4v11 M7 10l5 5 5-5 M5 20h14',bell:'M6 16V11a6 6 0 0 1 12 0v5l2 2H4z M10 21h4',
+ house:'M3 10.5 12 3l9 7.5 M5 9.5V21h14V9.5'
+};
+const svg=(d,s=24,w=2,c='currentColor')=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+const CATS=[
+ {id:'veg',name:'ירקות ופירות',c:'green',icon:'M12 7c-3-2-7 0-7 4 0 5 3 9 5 9 1 0 1.5-.5 2-.5s1 .5 2 .5c2 0 5-4 5-9 0-4-4-6-7-4z M12 7c0-2 1-3.5 3-4'},
+ {id:'bread',name:'לחם ומאפים',c:'sand',icon:'M4 11a4 4 0 0 1 4-4h8a4 4 0 0 1 1 7.9V20H7v-5.1A4 4 0 0 1 4 11z',coef:{teen:1.3}},
+ {id:'dairy',name:'חלב וביצים',c:'blue',icon:'M8 3h8v3l2 3v12H6V9l2-3z M6 9h12 M10 13h4'},
+ {id:'meat',name:'בשר ודגים',c:'peach',icon:'M7 14c-3-3 0-9 6-9 4 0 7 3 7 6 0 5-6 8-10 7 M7 14l-3 3 2 2 3-3',coef:{teen:1.4,child:.7}},
+ {id:'frozen',name:'קפואים',c:'ice',icon:'M12 2v20 M4 7l16 10 M20 7L4 17 M9 4l3 2 3-2 M9 20l3-2 3 2',coef:{teen:1.3}},
+ {id:'pantry',name:'מזווה ויבשים',c:'sand',icon:'M8 3h8v3H8z M7 6h10a1 1 0 0 1 1 1v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7a1 1 0 0 1 1-1z M6 11h12'},
+ {id:'snacks',name:'חטיפים ומתוקים',c:'pink',icon:'M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z',coef:{small:1,child:1.2,teen:1.2,adult:.6}},
+ {id:'drinks',name:'משקאות',c:'ice',icon:'M6 3h12l-1.5 18h-9z M6.5 8h11'},
+ {id:'clean',name:'ניקיון',c:'lilac',icon:'M9 3h4v4H9z M8 7h6l1 4v10H7V11z M13 4h4',coef:{baby:.5,small:.8,child:1,teen:1,adult:1}},
+ {id:'hyg',name:'היגיינה',c:'pink',icon:'M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z',coef:{baby:.5,small:.8,child:1,teen:1,adult:1}},
+ {id:'baby',name:'תינוקות',c:'peach',icon:'M9 12h.01 M15 12h.01 M10 16a3 3 0 0 0 4 0 M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0',coef:{baby:1,small:.3,child:0,teen:0,adult:0}},
+ {id:'other',name:'אחר',c:'grey',icon:'M4 6h16 M4 12h16 M4 18h10'}
+];
+const GROUPS=[{id:'baby',name:'תינוק',range:'0–2',from:0,to:2},{id:'small',name:'ילד קטן',range:'3–6',from:3,to:6},{id:'child',name:'ילד',range:'7–12',from:7,to:12},{id:'teen',name:'נער',range:'13–18',from:13,to:18},{id:'adult',name:'מבוגר',range:'19+',from:19,to:200}];
+const DEF_COEF={baby:.3,small:.5,child:.75,teen:1.2,adult:1};
+const LOCS=['מקרר','מקפיא','מזווה','אמבטיה','ארון ניקיון'];
+const DAYS=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const ROLES={admin:'מנהל/ת פרופיל',shopper:'אחראי/ת קניות',member:'בן/בת בית'};
+const AV=['peach','blue','green','pink','lilac','ice'];
+const IRR=/שקית|הנחה|הנחת|מבצע|עודף|מע"?מ|סה"?כ|סך הכל|לתשלום|אשראי|מזומן|כרטיס|קופה|קופאי|תודה|ח\.?פ|עוסק|טלפון|מועדון|פיקדון|פקדון/;
 
-    <section id="shop" class="page">
-      <div class="page-title"><h1>רשימת קניות</h1><div class="sync">שבועית · 24.11–30.11</div></div>
-      <div class="progress"><div class="progress-meta"><b id="shopMeta">4 מתוך 11 בעגלה</b><span id="remain">נשארו 7</span></div><div class="track"><i id="progressBar"></i></div></div>
-      <div class="list-add"><input id="addItem" placeholder="הוספת פריט לרשימה"><button onclick="addShoppingItem()">＋</button></div>
-      <div id="shoppingList"></div><button class="primary finish" onclick="finishShopping()">סיימתי לקנות</button>
-    </section>
+/* ================== כלים ================== */
+const $=s=>document.querySelector(s);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const r1=n=>Math.round(n*100)/100;
+const fmt=n=>String(r1(+n||0));
+const DAY=864e5;
+const iso=d=>{d=new Date(d);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+const today=()=>iso(new Date());
+const dm=d=>{d=new Date(d);return d.getDate()+'.'+(d.getMonth()+1)};
+const dmy=d=>{d=new Date(d);return dm(d)+'.'+d.getFullYear()};
+const hm=t=>{const d=new Date(t);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')};
+const daysBetween=(a,b)=>Math.round((new Date(iso(b))-new Date(iso(a)))/DAY);
+const addDays=(d,n)=>iso(new Date(new Date(d).getTime()+n*DAY));
+const dayLabel=t=>{const n=daysBetween(t,new Date());return n===0?'היום, '+dm(t):n===1?'אתמול, '+dm(t):'יום '+DAYS[new Date(t).getDay()]+', '+dm(t)};
+const ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<1?'עכשיו':m<60?`לפני ${m} דק׳`:m<1440?`לפני ${Math.round(m/60)} שע׳`:`לפני ${Math.round(m/1440)} ימים`};
+const ceilStep=(v,s)=>Math.ceil(v/s-1e-9)*s;
+const norm=s=>String(s||'').replace(/["'׳״`.,\-_/\\()*%:;]/g,' ').replace(/\d+/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+const normA=s=>String(s||'').replace(/["'׳״`]/g,'').replace(/\s+/g,' ').trim().toLowerCase();
+function bigrams(s){s=' '+s.replace(/\s+/g,' ')+' ';const a=[];for(let i=0;i<s.length-1;i++)a.push(s.slice(i,i+2));return a}
+function dice(a,b){if(!a||!b)return 0;const A=bigrams(a),B=bigrams(b);const m=new Map();A.forEach(x=>m.set(x,(m.get(x)||0)+1));let h=0;B.forEach(x=>{const c=m.get(x);if(c){h++;m.set(x,c-1)}});return 2*h/(A.length+B.length)}
+const touch=o=>{o.u=Date.now();return o};
 
-    <section id="catalog" class="page">
-      <div class="page-title"><h1>קטלוג מצרכים</h1><button class="primary" style="width:auto;padding:0 14px" onclick="toast('פתיחת טופס מוצר חדש')">מצרך חדש</button></div>
-      <input id="catalogSearch" oninput="renderCatalog()" style="width:100%;height:46px;border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:12px" placeholder="חיפוש מצרך">
-      <div id="catalogList"></div>
-    </section>
+/* ================== נתוני פתיחה ================== */
+function seed(){
+ const now=Date.now(),y=new Date().getFullYear();
+ const bd=(age,m=3)=>iso(new Date(y-age,m,12));
+ const family=[
+  {id:'m1',name:'דנה',birth:bd(42,1),role:'admin',email:''},
+  {id:'m2',name:'אבי',birth:bd(44,6),role:'shopper',email:''},
+  {id:'m3',name:'יונתן',birth:bd(15,4),role:'member',email:''},
+  {id:'m4',name:'נועה',birth:bd(9,8),role:'member',email:''}
+ ].map(touch);
+ // n,cat,unit,pack,weekly(למבוגר),loc,step,qty,extra
+ const raw=[
+  ['חלב 3%','dairy','ליטר',1,1.2,'מקרר',1,1,{shelf:7,aliases:['חלב 3% קרטון 1ל','חלב טרה 3%','חלב תנובה 3%']}],
+  ['ביצים L','dairy','יחידות',12,4,'מקרר',1,0,{customMin:6,aliases:['ביצים l 12','ביצים גודל l']}],
+  ['יוגורט טבעי','dairy','יחידות',1,2,'מקרר',1,4,{shelf:14,expiry:addDays(today(),1)}],
+  ['גבינה צהובה פרוסה','dairy','אריזות',1,.3,'מקרר',1,1,{shelf:21}],
+  ['קוטג׳ 5%','dairy','יחידות',1,.5,'מקרר',1,1,{shelf:10,aliases:['קוטג 5% 250']}],
+  ['עגבניות','veg','ק״ג',1,.6,'מקרר',.5,2,{shelf:7,aliases:['עגבניה שרי','עגבניות שרי']}],
+  ['מלפפונים','veg','ק״ג',1,.6,'מקרר',.5,.5,{shelf:7}],
+  ['בננות','veg','ק״ג',1,.5,'מזווה',.5,.5,{shelf:5}],
+  ['תפוחים','veg','ק״ג',1,.5,'מקרר',.5,1,{shelf:14}],
+  ['בצל','veg','ק״ג',1,.3,'מזווה',.5,1,{}],
+  ['לחם מחמצת','bread','כיכרות',1,.5,'מזווה',1,1,{shelf:4}],
+  ['פיתות','bread','יחידות',10,2.5,'מקפיא',1,4,{aliases:['פיתות כפריות 10']}],
+  ['חזה עוף','frozen','ק״ג',1,.4,'מקפיא',.5,.5,{aliases:['חזה עוף טרי']}],
+  ['בשר טחון','meat','ק״ג',1,.2,'מקפיא',.5,1,{}],
+  ['אפונה קפואה','frozen','אריזות',1,.1,'מקפיא',1,1,{}],
+  ['אורז בסמטי','pantry','ק״ג',1,.25,'מזווה',.5,1.5,{}],
+  ['פסטה פנה','pantry','חבילות',1,.4,'מזווה',1,3,{}],
+  ['שמן זית','pantry','בקבוקים',1,.08,'מזווה',1,1,{}],
+  ['טונה','pantry','קופסאות',4,.6,'מזווה',1,4,{}],
+  ['קפה','pantry','אריזות',1,.1,'מזווה',1,1,{}],
+  ['סוכר','pantry','ק״ג',1,.1,'מזווה',1,1,{}],
+  ['במבה','snacks','יחידות',1,.6,'מזווה',1,0,{aliases:['במב אסם 80גר','במבה אסם']}],
+  ['מים מינרליים','drinks','שישיות',1,.3,'מזווה',1,1,{}],
+  ['מיץ תפוזים','drinks','ליטר',1,.4,'מקרר',1,1,{shelf:10}],
+  ['נוזל כלים','clean','בקבוקים',1,.06,'ארון ניקיון',1,1,{}],
+  ['אבקת כביסה','clean','אריזות',1,.05,'ארון ניקיון',1,1,{}],
+  ['נייר טואלט','hyg','חבילות',1,.08,'אמבטיה',1,1,{}],
+  ['משחת שיניים','hyg','יחידות',1,.05,'אמבטיה',1,2,{}],
+  ['שמפו','hyg','בקבוקים',1,.04,'אמבטיה',1,1,{}]
+ ];
+ const catalog=raw.map(([name,cat,unit,pack,weekly,loc,step,qty,x],i)=>touch({id:'c'+(i+1),name,cat,unit,pack,weekly,loc,step,qty,customMin:x.customMin??null,shelf:x.shelf||0,expiry:x.expiry||'',aliases:x.aliases||[],preferred:'',alts:'',prices:[],qu:now-36e5*(i%7),by:'דנה'}));
+ const P={c1:6.9,c2:14.9,c5:6.2,c6:6.9,c11:15.9,c13:39.9,c12:9.9,c22:4.9};
+ Object.entries(P).forEach(([id,p])=>catalog.find(c=>c.id===id).prices.push({d:addDays(today(),-1),p,store:'סופר השכונה'}));
+ const log=[
+  {id:uid(),t:now-2*36e5,item:'c1',name:'חלב 3%',type:'out',delta:-1,prev:1,qty:0,by:'נועה'},
+  {id:uid(),t:now-3*36e5,item:'c16',name:'אורז בסמטי',type:'use',delta:-.5,prev:2,qty:1.5,by:'אבי'},
+  {id:uid(),t:now-DAY-5*36e5,item:null,name:'קנייה אושרה · 18 פריטים עודכנו',type:'buy',by:'דנה',store:'סופר השכונה'},
+  {id:uid(),t:now-DAY-18*36e5,item:null,name:'רשימה שבועית חדשה · 14 פריטים',type:'list',by:'אוטומטי'}
+ ].map(touch);
+ catalog.find(c=>c.id==='c1').qty=1; // אחרי שנקנה שוב חלקית
+ const receipts=[
+  touch({id:'r1',date:addDays(today(),-1),store:'סופר השכונה',total:287.6,status:'approved',lines:[],img:''}),
+  touch({id:'r2',date:today(),store:'סופר השכונה',total:312.4,status:'pending',img:'',lines:[
+   {id:1,type:'unrec',raw:'במב אסם 80גר',price:4.9,n:1},
+   {id:2,type:'unrec',raw:'פיתות כפריות 10',price:9.9,n:1},
+   {id:3,type:'unrec',raw:'קוטג 5% 250',price:6.2,n:1},
+   {id:4,type:'rec',raw:'חלב 3% קרטון 1ל',item:'c1',add:2,price:13.8,n:2},
+   {id:5,type:'rec',raw:'ביצים L 12',item:'c2',add:12,price:14.9,n:1},
+   {id:6,type:'rec',raw:'עגבניה שרי',item:'c6',add:1.2,price:8.3,n:1.2},
+   {id:7,type:'rec',raw:'לחם מחמצת',item:'c11',add:2,price:31.8,n:2},
+   {id:8,type:'rec',raw:'חזה עוף טרי',item:'c13',add:1,price:39.9,n:1},
+   {id:9,type:'irr',raw:'שקית ניילון',price:.1},
+   {id:10,type:'irr',raw:'הנחת מועדון',price:-5}
+  ]})
+ ];
+ return {v:2,family,catalog,log,receipts,coef:{...DEF_COEF},catCoef:Object.fromEntries(CATS.filter(c=>c.coef).map(c=>[c.id,{...c.coef}])),
+  list:touch({id:'L'+uid(),week:'',status:'draft',items:[],versions:[]}),lists:[],notices:[],groupsSeen:{},
+  settings:touch({listDay:4,listHour:6,safetyDays:2,minDays:2,autoList:true,notif:{ready:true,out:true,exp:true},expDays:3,theme:'system',sheetName:'מצרכים – משפחת כהן',familyName:'כהן',emails:''}),
+  seededManual:true};
+}
 
-    <section id="profile" class="page">
-      <div class="page-title"><h1>פרופיל משפחה</h1><div class="sync">4 בני בית</div></div>
-      <div class="card" style="padding:16px;margin-bottom:16px">הכמויות ברשימה השבועית ובמלאי מחושבות לפי הרכב המשפחה.</div>
-      <div class="profile-grid" id="people"></div>
-      <button class="primary" style="margin-top:12px" onclick="toast('קישור הזמנה הועתק')">שליחת קישור הזמנה</button>
-    </section>
+/* ================== מצב ושמירה ================== */
+const LS='hg-state-v2';
+let S, ui={route:'home',loc:'all',cat:'all',q:'',searchOpen:false,histF:'all',rf:'all',store:false,sync:'local',pending:0,scan:null};
+let me=null;
+try{S=JSON.parse(localStorage.getItem(LS))}catch(e){}
+try{me=localStorage.getItem('hg-me')}catch(e){}
+function firstSeed(){
+ generateList(true);
+ const add=(cid,who)=>{const c=S.catalog.find(x=>x.id===cid);if(!S.list.items.find(i=>i.item===cid))S.list.items.push(touch({id:uid(),item:cid,name:c.name,cat:c.cat,packs:1,src:'manual',who,done:false}))};
+ add('c4','נועה');add('c8','יונתן');add('c22','יונתן');add('c27','נועה');
+ S.list.items.filter(i=>['c6','c18','c11','c27'].includes(i.item)).forEach(i=>i.done=true);
+}
+const user=()=>S.family.find(m=>m.id===me&&!m.del)||S.family.find(m=>!m.del);
+const canManage=()=>['admin','shopper'].includes(user()?.role);
+const isAdmin=()=>user()?.role==='admin';
+const items=()=>S.catalog.filter(c=>!c.del);
+const members=()=>S.family.filter(m=>!m.del);
+const catOf=id=>CATS.find(c=>c.id===id)||CATS[CATS.length-1];
+const byId=id=>S.catalog.find(c=>c.id===id);
 
-    <section id="history" class="page">
-      <div class="page-title"><h1>היסטוריה ודוחות</h1><div class="sync">נובמבר עד היום</div></div>
-      <div class="history"><div class="metric"><b>4</b><span>קניות</span></div><div class="metric"><b>112</b><span>פריטים נקנו</span></div><div class="metric"><b>9</b><span>פעמים נגמר</span></div></div>
-      <div class="timeline"><div class="event"><b>חלב 3% סומן כנגמר</b><small>היום, 08:12 · נועה</small></div><div class="event"><b>אורז בסמטי: 2 ← 1.5 ק״ג</b><small>היום, 07:40 · אבי</small></div><div class="event"><b>קנייה אושרה · 18 פריטים עודכנו</b><small>אתמול, 19:05 · דנה</small></div></div>
-    </section>
+let saveT=null;
+function save(){
+ try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+ if(REMOTE){ui.pending++;clearTimeout(saveT);saveT=setTimeout(pushRemote,700);setSync('saving')}
+}
 
-    <section id="settings" class="page">
-      <div class="page-title"><h1>הגדרות</h1></div>
-      <div class="settings-list">
-        <button class="setting-row" style="width:100%;text-align:right" onclick="showPage('catalog')"><div><b>קטלוג מצרכים</b><br><small>86 מצרכים, יחידות ומינימום</small></div><span>‹</span></button>
-        <button class="setting-row" style="width:100%;text-align:right" onclick="showPage('profile')"><div><b>פרופיל משפחה</b><br><small>4 בני בית</small></div><span>‹</span></button>
-        <button class="setting-row" style="width:100%;text-align:right" onclick="showPage('history')"><div><b>היסטוריה ודוחות</b><br><small>קניות ועדכוני מלאי</small></div><span>‹</span></button>
-        <div class="setting-row"><div><b>מחובר לגיליון משותף</b><br><small>מצרכים – משפחת כהן</small></div><button class="toggle on" aria-label="מחובר"></button></div>
-        <div class="setting-row"><div><b>רשימה שבועית חדשה</b><br><small>כל יום חמישי ב־06:00</small></div><button class="toggle on"></button></div>
-        <div class="setting-row"><div><b>משהו נגמר בבית</b><br><small>התראה לבני הבית</small></div><button class="toggle on"></button></div>
-        <div class="setting-row"><div><b>תוקף קרוב</b><br><small>3 ימים לפני התוקף</small></div><button class="toggle"></button></div>
-      </div>
-    </section>
-  </main>
+/* ---------- Google Apps Script (Sheets) ---------- */
+const REMOTE=typeof google!=='undefined'&&google.script&&google.script.run;
+let rver=0,pushing=false;
+const gs=(fn,...a)=>new Promise((res,rej)=>google.script.run.withSuccessHandler(res).withFailureHandler(rej)[fn](...a));
+function mergeArr(a=[],b=[]){const m=new Map();[...a,...b].forEach(x=>{const k=x.id;const o=m.get(k);if(!o||(x.u||0)>(o.u||0))m.set(k,x)});return [...m.values()]}
+function merge(local,remote){
+ const out={...remote};
+ ['family','catalog','log','receipts','notices','lists'].forEach(k=>out[k]=mergeArr(local[k],remote[k]));
+ out.log.sort((a,b)=>a.t-b.t);
+ out.settings=(local.settings.u||0)>(remote.settings.u||0)?local.settings:remote.settings;
+ if(local.list.id===remote.list.id){out.list={...((local.list.u||0)>(remote.list.u||0)?local.list:remote.list),items:mergeArr(local.list.items,remote.list.items)}}
+ else out.list=(local.list.u||0)>(remote.list.u||0)?local.list:remote.list;
+ out.coef=local.coefU>remote.coefU?local.coef:remote.coef;out.catCoef=local.coefU>remote.coefU?local.catCoef:remote.catCoef;
+ return out;
+}
+async function pushRemote(){
+ if(pushing){clearTimeout(saveT);saveT=setTimeout(pushRemote,500);return}
+ pushing=true;
+ try{
+  const r=await gs('saveState',JSON.stringify(S),rver);
+  if(r.conflict){S=merge(S,JSON.parse(r.json));rver=r.version;localStorage.setItem(LS,JSON.stringify(S));pushing=false;return pushRemote()}
+  rver=r.version;S.synced=true;ui.pending=0;setSync('ok');
+ }catch(e){setSync('err')}
+ pushing=false;
+}
+async function pullRemote(initial){
+ if(ui.pending||pushing)return;
+ try{
+  const r=await gs('getState',rver);
+  if(!r||r.empty){if(initial)pushRemote();setSync('ok');return}
+  if(r.version!==rver||r.changed){const R=JSON.parse(r.json);S=initial&&S.synced?merge(S,R):R;S.synced=true;rver=r.version;localStorage.setItem(LS,JSON.stringify(S));render()}
+  setSync('ok');
+ }catch(e){setSync('err')}
+}
+function setSync(s){ui.sync=s;document.querySelectorAll('[data-sync]').forEach(el=>el.outerHTML=syncBadge())}
+function syncBadge(){
+ if(!navigator.onLine)return `<span class="sync off" data-sync>${svg(I.cloudOff,16)}לא מקוון</span>`;
+ const m={local:['','שמור במכשיר'],ok:['','מסונכרן'],saving:['','שומר…'],err:['err','שגיאת סנכרון']}[ui.sync];
+ return `<span class="sync ${m[0]}" data-sync>${svg(ui.sync==='err'?I.cloudOff:I.cloud,16)}${m[1]}</span>`;
+}
 
-  <nav class="nav">
-    <button class="active" data-page="home" onclick="showPage('home')"><span class="nav-icon">⌂</span>בית</button>
-    <button data-page="inventory" onclick="showPage('inventory')"><span class="nav-icon">▦</span>מלאי</button>
-    <button data-page="shop" onclick="showPage('shop')"><span class="nav-icon">🛒</span>קניות <b id="navCount">14</b></button>
-    <button onclick="toast('מצב צילום יופעל בטלפון')"><span class="nav-icon">▣</span>סריקה</button>
-    <button data-page="settings" onclick="showPage('settings')"><span class="nav-icon">···</span>עוד</button>
-  </nav>
-  <div class="toast" id="toast"></div>
+/* ================== לוגיקה: פרופיל וצריכה ================== */
+function ageOf(m){const b=new Date(m.birth);if(isNaN(b))return 30;const n=new Date();let a=n.getFullYear()-b.getFullYear();if(n<new Date(n.getFullYear(),b.getMonth(),b.getDate()))a--;return Math.max(0,a)}
+const groupOf=m=>GROUPS.find(g=>ageOf(m)>=g.from&&ageOf(m)<=g.to)||GROUPS[4];
+function coefFor(g,cat){const cc=S.catCoef[cat];return cc&&cc[g]!=null?cc[g]:S.coef[g]}
+function factor(cat,fam=members()){return fam.reduce((s,m)=>s+coefFor(groupOf(m).id,cat),0)}
+function totalFactor(fam=members()){return items().reduce((s,c)=>s+c.weekly*factor(c.cat,fam),0)}
+function actualWeekly(c){
+ const since=Date.now()-56*DAY;
+ const ev=S.log.filter(l=>l.item===c.id&&l.t>since&&l.delta<0&&['use','out'].includes(l.type));
+ if(!ev.length)return null;
+ const first=Math.min(...S.log.filter(l=>l.item===c.id).map(l=>l.t));
+ const weeks=Math.max(1,(Date.now()-Math.max(first,since))/(7*DAY));
+ return {rate:ev.reduce((s,l)=>s-l.delta,0)/weeks,weeks};
+}
+function expectedWeekly(c){
+ const prof=c.weekly*factor(c.cat);
+ const a=actualWeekly(c);if(!a||a.weeks<2)return prof;
+ const w=Math.min(.7,a.weeks*.12);return prof*(1-w)+a.rate*w;
+}
+const autoMin=c=>Math.max(c.step,ceilStep(expectedWeekly(c)*S.settings.minDays/7,c.step));
+const minOf=c=>c.customMin!=null&&c.customMin!==''?+c.customMin:autoMin(c);
+function expDaysLeft(c){return c.expiry&&c.qty>0?daysBetween(new Date(),c.expiry):null}
+function status(c){
+ if(c.qty<=0)return 'out';
+ const e=expDaysLeft(c);if(e!=null&&e<=S.settings.expDays)return 'exp';
+ if(c.qty<minOf(c))return 'low';return 'ok';
+}
+const ST={out:['נגמר','out',I.x],exp:['תוקף קרוב','warn',I.clock],low:['מתחת למינימום','warn',I.down]};
+const tagHtml=s=>ST[s]?`<span class="tag ${ST[s][1]}">${svg(ST[s][2],16,2.25)}${ST[s][0]}</span>`:'';
+const expText=c=>{const e=expDaysLeft(c);return e==null?'':e<0?'פג תוקף '+dm(c.expiry):e===0?'בתוקף עד היום':e===1?'בתוקף עד מחר, '+dm(c.expiry):'בתוקף עד '+dm(c.expiry)};
 
-  <script>
-    const state={
-      inventory:[
-        {name:'חלב 3%',category:'חלב וביצים',location:'מקרר',qty:1,min:2,unit:'ליטר',status:'מתחת למינימום',expiry:''},
-        {name:'ביצים L',category:'חלב וביצים',location:'מקרר',qty:0,min:6,unit:'יחידות',status:'נגמר',expiry:''},
-        {name:'יוגורט טבעי',category:'חלב וביצים',location:'מקרר',qty:4,min:2,unit:'יחידות',status:'תוקף קרוב',expiry:'25.11'},
-        {name:'חזה עוף',category:'קפואים',location:'מקפיא',qty:.5,min:1,unit:'ק״ג',status:'מתחת למינימום',expiry:''},
-        {name:'אורז בסמטי',category:'מזווה ויבשים',location:'מזווה',qty:1.5,min:1,unit:'ק״ג',status:'תקין',expiry:''},
-        {name:'עגבניות',category:'ירקות ופירות',location:'מקרר',qty:2,min:1,unit:'ק״ג',status:'תקין',expiry:''},
-        {name:'פסטה פנה',category:'מזווה ויבשים',location:'מזווה',qty:3,min:2,unit:'חבילות',status:'תקין',expiry:''}
-      ],
-      shop:[
-        {name:'חלב 3%',qty:'2 × 1 ליטר',category:'חלב וביצים',source:'אוטומטי',done:false},
-        {name:'ביצים L',qty:'12 יחידות',category:'חלב וביצים',source:'אוטומטי',done:false},
-        {name:'גבינה צהובה פרוסה',qty:'1 × 200 גרם',category:'חלב וביצים',source:'ידני',done:false},
-        {name:'מלפפונים',qty:'1 ק״ג',category:'ירקות ופירות',source:'אוטומטי',done:false},
-        {name:'בננות',qty:'1 אשכול',category:'ירקות ופירות',source:'ידני',done:false},
-        {name:'במבה',qty:'3 יחידות',category:'מזווה ויבשים',source:'ידני',done:false},
-        {name:'חזה עוף',qty:'1 ק״ג',category:'קפואים',source:'אוטומטי',done:false},
-        {name:'עגבניות',qty:'1 ק״ג',category:'בעגלה',source:'אוטומטי',done:true},
-        {name:'שמן זית',qty:'1 בקבוק',category:'בעגלה',source:'אוטומטי',done:true},
-        {name:'לחם מחמצת',qty:'2 כיכרות',category:'בעגלה',source:'אוטומטי',done:true},
-        {name:'נייר טואלט',qty:'1 חבילה',category:'בעגלה',source:'ידני',done:true}
-      ]
-    };
-    const saved=localStorage.getItem('grocery-state'); if(saved){try{Object.assign(state,JSON.parse(saved))}catch(e){}}
-    function save(){localStorage.setItem('grocery-state',JSON.stringify(state))}
-    function showPage(id){
-      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');
-      document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
-      window.scrollTo(0,0);
-    }
-    function toast(text){const t=document.getElementById('toast');t.textContent=text;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),2200)}
-    function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]))}
-    function renderUrgent(){
-      const urg=state.inventory.filter(i=>i.status==='נגמר'||i.status==='תוקף קרוב'||i.status==='מתחת למינימום').slice(0,3);
-      document.getElementById('urgent').innerHTML=urg.map(i=>`<div class="urgent-row"><div class="item-icon">▤</div><div><div class="urgent-name">${esc(i.name)}</div><div class="urgent-sub">${i.status==='נגמר'?`נגמר · ${i.qty===0?'מלאי ריק':''}`:i.status==='תוקף קרוב'?`בתוקף עד ${i.expiry}`:'מתחת למינימום'}</div></div><span class="badge ${i.status==='נגמר'?'red':'orange'}">${esc(i.status)}</span></div>`).join('');
-    }
-    function renderInventory(){
-      const loc=document.getElementById('locationFilter').value,q=(document.getElementById('search').value||'').trim();
-      const items=state.inventory.filter(i=>loc==='all'||i.location===loc).filter(i=>!q||i.name.includes(q));
-      document.getElementById('inventoryCount').textContent=`${items.length} פריטים · ${items.filter(i=>i.qty<=i.min).length} חסרים`;
-      document.getElementById('inventoryList').innerHTML=items.map((i,idx)=>`<div class="card inventory-row"><div class="item-icon">▤</div><div><h3>${esc(i.name)}</h3><small>${esc(i.location)} · ${i.status}</small></div><div class="qty"><b>${i.qty} ${esc(i.unit)}</b><div style="margin-top:6px"><button onclick="changeQty('${esc(i.name)}',-1)">−</button> <button onclick="changeQty('${esc(i.name)}',1)">＋</button></div></div></div>`).join('');
-    }
-    function changeQty(name,d){
-      const i=state.inventory.find(x=>x.name===name);if(!i)return;i.qty=Math.max(0,+(i.qty+d).toFixed(1));i.status=i.qty===0?'נגמר':i.qty<i.min?'מתחת למינימום':'תקין';save();renderInventory();renderUrgent();toast(`${i.name} עודכן ל-${i.qty} ${i.unit}`);
-    }
-    function markMissing(){
-      const i=state.inventory.find(x=>x.qty===0||x.status==='נגמר')||state.inventory[0];i.qty=0;i.status='נגמר';save();renderUrgent();renderInventory();toast(`${i.name} סומן כנגמר`);
-    }
-    function renderShopping(){
-      const groups={};state.shop.forEach(i=>{if(!i.done)(groups[i.category]||(groups[i.category]=[])).push(i)});
-      let html='';
-      Object.entries(groups).forEach(([cat,items])=>{html+=`<div class="category">· ${esc(cat)} · ${items.length}</div>`+items.map(i=>`<div class="shop-row"><button class="check" aria-label="סימון" onclick="toggleShop('${esc(i.name)}')"></button><div><b>${esc(i.name)}</b><div class="source">${esc(i.qty)} · ${esc(i.source)}</div></div></div>`).join('')});
-      const done=state.shop.filter(i=>i.done);if(done.length){html+=`<div class="category">בעגלה · ${done.length}</div>`+done.map(i=>`<div class="shop-row"><button class="check done" onclick="toggleShop('${esc(i.name)}')">✓</button><div><b>${esc(i.name)}</b><div class="source">${esc(i.qty)} · בעגלה</div></div></div>`).join('')}
-      document.getElementById('shoppingList').innerHTML=html;
-      const total=state.shop.length,left=state.shop.filter(i=>!i.done).length,doneCount=total-left;
-      document.getElementById('shopMeta').textContent=`${doneCount} מתוך ${total} בעגלה`;document.getElementById('remain').textContent=`נשארו ${left}`;document.getElementById('progressBar').style.width=`${total?doneCount/total*100:0}%`;document.getElementById('navCount').textContent=left;
-    }
-    function toggleShop(name){const i=state.shop.find(x=>x.name===name);if(i){i.done=!i.done;save();renderShopping()}}
-    function addShoppingItem(){
-      const el=document.getElementById('addItem'),name=el.value.trim();if(!name)return;
-      state.shop.push({name,qty:'כמות חדשה',category:'ידני',source:'ידני',done:false});el.value='';save();renderShopping();toast(`${name} נוסף לרשימה`);
-    }
-    function finishShopping(){save();toast('הרשימה נשמרה והקנייה הושלמה');state.shop.forEach(i=>i.done=true);save();renderShopping()}
-    function renderCatalog(){
-      const q=(document.getElementById('catalogSearch').value||'').trim();
-      const items=state.inventory.filter(i=>!q||i.name.includes(q));
-      document.getElementById('catalogList').innerHTML=items.map(i=>`<div class="card catalog-row"><h3>${esc(i.name)}</h3><small>${esc(i.category)} · ${esc(i.unit)} · מינימום ${i.min} · ${esc(i.location)}</small></div>`).join('');
-    }
-    function renderPeople(){
-      document.getElementById('people').innerHTML=[['ד','דנה','מבוגרת · 42 · אחראי/ת קניות'],['א','אבי','מבוגר · 44'],['י','יונתן','נער · 15'],['נ','נועה','ילדה · 9']].map(p=>`<div class="person"><div class="avatar">${p[0]}</div><div><b>${p[1]}</b><small>${p[2]}</small></div></div>`).join('');
-    }
-    const fmt=new Intl.DateTimeFormat('he-IL',{weekday:'long',day:'numeric',month:'long'});document.getElementById('today').textContent=fmt.format(new Date());
-    document.querySelectorAll('.toggle').forEach(b=>b.onclick=()=>b.classList.toggle('on'));
-    renderUrgent();renderInventory();renderShopping();renderCatalog();renderPeople();
-  </script>
+/* ================== רשימת קניות ================== */
+function nextListDate(from=new Date()){const d=new Date(from);let n=(S.settings.listDay-d.getDay()+7)%7;if(n===0)n=7;return addDays(d,n)}
+function weekStartFor(d=new Date()){const dd=new Date(d);const back=(dd.getDay()-S.settings.listDay+7)%7;return addDays(dd,-back)}
+const packLabel=(c,p)=>c.pack===1?`${fmt(p)} ${c.unit}`:`${fmt(p)} × ${fmt(c.pack)} ${c.unit}`;
+function liQty(li){const c=byId(li.item);return c?packLabel(c,li.packs):(li.qtyText||'1')}
+function lastPrice(c){return c?.prices?.length?c.prices[c.prices.length-1].p:null}
+function calcNeed(c){
+ const days=Math.max(1,daysBetween(new Date(),nextListDate()))+S.settings.safetyDays;
+ const exp=expectedWeekly(c),min=minOf(c);
+ const need=exp*days/7+min-c.qty;
+ const st=status(c);
+ let reason=null;
+ if(c.qty<=0)reason='נגמר';else if(c.qty<min)reason='מתחת למינימום';
+ else if(need>0&&exp>0){const runOut=Math.floor(c.qty/(exp/7));reason='צפוי להיגמר עד יום '+DAYS[new Date(addDays(new Date(),Math.min(runOut,6))).getDay()]}
+ if(st==='exp'&&!reason)reason='תוקף קרוב';
+ if(!reason)return null;
+ const packs=c.pack===1?Math.max(c.step,ceilStep(Math.max(need,0),c.step)):Math.max(1,Math.ceil(need/c.pack-1e-9));
+ return {packs,reason};
+}
+function generateList(silent){
+ const L=S.list;
+ const keep=L.items.filter(i=>!i.del&&!i.done&&(i.src==='manual'||i.carry));
+ if(L.items.length&&!silent){S.lists.push(touch({id:L.id,week:L.week,status:L.status,items:L.items.filter(i=>!i.del),versions:L.versions}))}
+ const n={id:L.week===weekStartFor()&&silent?L.id:'L'+uid(),week:weekStartFor(),status:'draft',items:[],versions:[]};
+ n.items=keep.map(i=>touch({...i}));
+ items().forEach(c=>{const r=calcNeed(c);if(!r)return;if(n.items.find(i=>i.item===c.id)){n.items.find(i=>i.item===c.id).reason=r.reason;return}
+  n.items.push(touch({id:uid(),item:c.id,name:c.name,cat:c.cat,packs:r.packs,src:'auto',reason:r.reason,done:false}))});
+ S.list=touch(n);S.settings.lastGen=Date.now();
+ if(!silent){S.log.push(touch({id:uid(),t:Date.now(),item:null,name:`רשימה שבועית חדשה · ${activeList().length} פריטים`,type:'list',by:'אוטומטי'}));
+  if(S.settings.notif.ready)notice(`הרשימה השבועית מוכנה · ${activeList().length} פריטים`,'shop');
+  if(REMOTE&&S.settings.notif.ready)gs('notify','רשימת הקניות השבועית מוכנה',`${activeList().length} פריטים ברשימה לשבוע ${dm(S.list.week)}`).catch(()=>{})}
+}
+const activeList=()=>S.list.items.filter(i=>!i.del&&!i.removed);
+const openCount=()=>activeList().filter(i=>!i.done).length;
+function ensureOnList(c,reason){
+ let li=S.list.items.find(i=>i.item===c.id&&!i.del&&!i.done);
+ if(li){if(li.removed){li.removed=false;touch(li)}return li}
+ const r=calcNeed(c);
+ li=touch({id:uid(),item:c.id,name:c.name,cat:c.cat,packs:r?r.packs:1,src:'auto',reason:reason||r?.reason||'מתחת למינימום',done:false});
+ S.list.items.push(li);touch(S.list);return li;
+}
+function notice(text,route){S.notices.push(touch({id:uid(),t:Date.now(),text,route,seen:false}))}
+
+/* ================== פעולות מלאי ================== */
+function setQty(c,q,type='use',silent){
+ q=Math.max(0,r1(q));const prev=c.qty;if(prev===q)return;
+ c.qty=q;c.qu=Date.now();c.by=user()?.name||'';touch(c);
+ if(q>prev&&c.shelf)c.expiry=addDays(today(),c.shelf);
+ S.log.push(touch({id:uid(),t:Date.now(),item:c.id,name:c.name,type:q===0?'out':q>prev?(type==='buy'?'buy':'fix'):type,delta:r1(q-prev),prev,qty:q,by:c.by}));
+ if(q<minOf(c))ensureOnList(c);
+ if(q===0&&S.settings.notif.out&&REMOTE&&!silent)gs('notify',`${c.name} נגמר`,`${c.by} סימן/ה ש${c.name} נגמר. הפריט נוסף לרשימת הקניות.`).catch(()=>{});
+ save();
+}
+let undoFn=null,snackT=null;
+function snack(text,undo){
+ $('#snackText').textContent=text;undoFn=undo||null;$('#snackBtn').classList.toggle('hide',!undo);
+ $('#snack').classList.add('show');$('#fab').classList.add('hide');
+ clearTimeout(snackT);snackT=setTimeout(()=>{$('#snack').classList.remove('show');$('#fab').classList.remove('hide');undoFn=null},undo?6000:2600);
+}
+$('#snackBtn').onclick=()=>{if(undoFn)undoFn();undoFn=null;$('#snack').classList.remove('show');$('#fab').classList.remove('hide');render()};
+function snapshotUndo(){const snap=JSON.stringify(S);return()=>{S=JSON.parse(snap);save();render()}}
+
+/* ================== ניווט ורינדור ================== */
+const TABS=[['home','בית',I.home],['inv','מלאי',I.inv],['shop','קניות',I.bag],['scan','סריקה',I.receipt],['more','עוד',I.menu]];
+const TABOF={home:'home',inv:'inv',shop:'shop',scan:'scan',review:'scan',more:'more',catalog:'more',family:'more',history:'more',settings:'more'};
+function go(r){location.hash=r}
+window.addEventListener('hashchange',()=>{ui.route=(location.hash.slice(1)||'home').split('?')[0];ui.searchOpen=false;ui.q='';render();window.scrollTo(0,0)});
+function render(){
+ const ae=document.activeElement,fid=ae&&ae.id,sel=ae&&ae.selectionStart;
+ const v=VIEWS[ui.route]||VIEWS.home;
+ const app=$('#app');app.className='app'+(ui.route==='shop'&&ui.store?' store':'');
+ app.innerHTML=v();
+ const foot=FOOT[ui.route]?FOOT[ui.route]():'';
+ $('#footer').innerHTML=foot?`<div class="footer">${foot}</div>`:'';
+ if(foot)app.classList.add('has-footer');
+ $('#fab').innerHTML=['home','inv'].includes(ui.route)?`<button class="fab" data-a="missing">${svg(I.plus,22,2.5)}חסר בבית</button>`:'';
+ const tab=TABOF[ui.route]||'home',oc=openCount();
+ $('#nav').innerHTML=TABS.map(([id,l,ic])=>`<a href="#${id}" class="${tab===id?'on':''}" ${tab===id?'aria-current="page"':''}><span class="pill">${svg(ic)}</span>${l}${id==='shop'&&oc?`<span class="badge">${oc}</span>`:''}</a>`).join('');
+ renderSheet();
+ if(fid){const el=document.getElementById(fid);if(el){el.focus();try{el.setSelectionRange(sel,sel)}catch(e){}}}
+ applyTheme();
+}
+function applyTheme(){const t=S.settings.theme;if(t==='system')document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme',t)}
+const header=(title,sub,right='')=>`<header class="hdr"><div class="col"><h1>${title}</h1>${sub?`<span class="sub">${sub}</span>`:''}</div>${right}</header>`;
+const subHeader=(title,sub,right='',back='more')=>`<header class="hdr" style="justify-content:flex-start;gap:4px"><a class="back" href="#${back}" aria-label="חזרה">${svg(I.back)}</a><div class="col"><h1 class="sm">${title}</h1>${sub?`<span class="sub">${sub}</span>`:''}</div>${right}</header>`;
+const catIco=(cat,lg)=>{const c=catOf(cat);return `<span class="ico ${lg?'lg':''}" style="background:var(--c-${c.c})">${svg(c.icon,lg?24:22)}</span>`};
+
+/* ---------- בית ---------- */
+function vHome(){
+ const all=items();
+ if(!all.length||!members().length)return `${header('ברוכים הבאים')}<div class="card empty"><span class="big" style="background:var(--peach)">${svg(I.house,36)}</span><h2>בואו נכיר את הבית</h2><span class="sub">שני צעדים קצרים ונוכל להכין לכם רשימת קניות שבועית.</span><a class="btn w" href="#family">1. מי גר בבית?</a><a class="btn w" href="#catalog">2. בחירת מצרכים בסיסיים</a></div>`;
+ const st=all.map(c=>({c,s:status(c)}));
+ const out=st.filter(x=>x.s==='out'),low=st.filter(x=>x.s==='low'),exp=st.filter(x=>x.s==='exp');
+ const missing=out.length+low.length;
+ const urgent=[...out,...exp,...low];
+ const last=[...S.log].reverse().find(l=>l.item);
+ const d=new Date();const greet=d.getHours()<12?'בוקר טוב':d.getHours()<17?'צהריים טובים':'ערב טוב';
+ const notes=S.notices.filter(n=>!n.seen).slice(-2);
+ const pend=S.receipts.find(r=>r.status==='pending'&&!r.del);
+ return `<header class="hdr"><div class="col"><span class="sub">יום ${DAYS[d.getDay()]}, ${d.getDate()} ב${d.toLocaleDateString('he-IL',{month:'long'})}</span><h1 class="sm">${greet}, משפחת ${esc(S.settings.familyName)}</h1></div>${syncBadge()}</header>
+ ${notes.map(n=>`<div class="banner green">${svg(I.bell,22)}<span class="t"><b>${esc(n.text)}</b><span>${ago(n.t)}</span></span>${n.route?`<a class="btn link" href="#${n.route}" data-a="seen" data-id="${n.id}">לצפייה</a>`:''}<button class="sq" style="background:transparent" data-a="seen" data-id="${n.id}" aria-label="סגירה">${svg('M6 6l12 12 M18 6 6 18',20)}</button></div>`).join('')}
+ <section class="card" style="background:${missing?'var(--peach)':'var(--green-s)'};box-shadow:none;padding:18px 16px 16px;display:flex;flex-direction:column;gap:12px">
+  <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div style="display:flex;flex-direction:column;gap:2px">
+   <span style="font-size:28px;line-height:36px;font-weight:700">${missing?`חסרים ${missing} מצרכים`:'הכול בבית!'}</span>
+   <span style="font-size:16px;font-weight:500;color:${missing?'var(--peach-i)':'var(--green-i)'}">${missing?`${out.length} נגמרו · ${low.length} מתחת למינימום`:'אין כרגע מצרכים חסרים'}</span></div>
+   <span class="ico" style="width:52px;height:52px;border-radius:16px;background:${missing?'var(--peach-2)':'var(--card)'};color:#1F2A24">${svg(missing?I.bag:I.check,28)}</span></div>
+  <a class="btn pri big" style="height:52px" href="#shop">לרשימת הקניות (${openCount()})${svg(I.chevL,20,2.25)}</a>
+ </section>
+ ${urgent.length?`<section style="display:flex;flex-direction:column;gap:8px"><div class="hdr"><h2>דחוף</h2><a href="#inv" style="font-size:14px;font-weight:600">לכל המלאי</a></div>
+ <div class="list">${urgent.slice(0,3).map(({c,s})=>`<a class="row" href="#inv" style="min-height:60px">${catIco(c.cat)}<span class="t"><b>${esc(c.name)}</b><span>${s==='exp'?expText(c):s==='out'?'נגמר '+(c.qu?dayLabel(c.qu).split(',')[0]:'')+(c.by?' · '+esc(c.by):''):`נשארו ${fmt(c.qty)} ${c.unit} · מינימום ${fmt(minOf(c))}`}</span></span>${tagHtml(s)}</a>`).join('')}
+ ${urgent.length>3?`<a class="row" href="#inv" style="justify-content:center;min-height:48px;font-size:14px;font-weight:600;color:var(--green-d)">ועוד ${urgent.length-3} פריטים דחופים</a>`:''}</div></section>`:''}
+ ${pend?`<a class="banner peach" href="#review?${pend.id}" data-a="openReceipt" data-id="${pend.id}" style="text-decoration:none">${svg(I.clock,22)}<span class="t"><b>חשבונית ממתינה לאישור</b><span>${dayLabel(pend.date)} · ${pend.lines.filter(l=>l.type==='unrec').length} שורות לא זוהו</span></span><b style="color:var(--green-d)">להמשך</b></a>`:''}
+ <section style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+  <a class="card" href="#scan" style="min-height:84px;padding:14px;display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--ink)">${svg(I.receipt,26,2,'var(--green)')}<b>סריקת חשבונית</b></a>
+  <a class="card" href="#inv" style="min-height:84px;padding:14px;display:flex;flex-direction:column;gap:8px;text-decoration:none;color:var(--ink)">${svg(I.inv,26,2,'var(--green)')}<b>עדכון מלאי</b></a>
+ </section>
+ <span class="sub" style="text-align:center">${st.filter(x=>x.s==='ok').length} פריטים תקינים${last?` · עודכן ${ago(last.t)}${last.by?' על ידי '+esc(last.by):''}`:''}</span>`;
+}
+
+/* ---------- מלאי ---------- */
+function vInv(){
+ const all=items();
+ const locs=['all',...LOCS.filter(l=>all.some(c=>c.loc===l))];
+ const cats=CATS.filter(c=>all.some(i=>i.cat===c.id));
+ const q=normA(ui.q);
+ const vis=all.filter(c=>(ui.loc==='all'||c.loc===ui.loc)&&(ui.cat==='all'||c.cat===ui.cat)&&(!q||normA(c.name).includes(q)||c.aliases.some(a=>normA(a).includes(q))));
+ const rank={out:0,exp:1,low:2,ok:3};
+ vis.sort((a,b)=>rank[status(a)]-rank[status(b)]||a.name.localeCompare(b.name,'he'));
+ const missing=vis.filter(c=>['out','low'].includes(status(c))).length;
+ const head=ui.searchOpen?`<header class="hdr"><label class="field" style="flex:1">${svg(I.search,20,2,'var(--muted)')}<input id="invQ" data-in="q" placeholder="חיפוש מצרך במלאי" value="${esc(ui.q)}" autocomplete="off"></label><button class="btn link" data-a="searchClose">סגירה</button></header>`
+  :`<header class="hdr"><h1>מלאי</h1><div style="display:flex;align-items:center;gap:4px">${syncBadge()}<button class="sq" style="background:var(--card)" data-a="searchOpen" aria-label="חיפוש במלאי">${svg(I.search,22)}</button></div></header>`;
+ return `${head}
+ <div class="seg" role="group" aria-label="מיקום">${locs.map(l=>`<button aria-pressed="${ui.loc===l}" data-a="loc" data-v="${l}">${l==='all'?'הכול':l}</button>`).join('')}</div>
+ <div class="chips">${[['all','כל הקטגוריות'],...cats.map(c=>[c.id,c.name])].map(([id,n])=>`<button class="chip" aria-pressed="${ui.cat===id}" data-a="cat" data-v="${id}">${ui.cat===id?svg(I.check,16,2.5):''}${n}</button>`).join('')}</div>
+ <span class="sub">${vis.length} פריטים · ${missing} חסרים · ממוינים לפי דחיפות</span>
+ ${vis.length?vis.map(c=>{const s=status(c);return `<div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+  <button data-a="editStock" data-id="${c.id}" style="display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;text-align:right;width:100%">${catIco(c.cat,1)}<span style="display:flex;flex-direction:column;flex:1;min-width:0"><b style="font-size:16px;font-weight:600">${esc(c.name)}</b><span class="sub">${esc(c.loc)} · ${s==='exp'?expText(c):`מינימום ${fmt(minOf(c))} ${c.unit}`}</span></span>${tagHtml(s)}</button>
+  <div class="qtyline"><span class="qty" aria-live="polite" style="color:${c.qty<=0?'var(--red)':'var(--ink)'}">${fmt(c.qty)} <small>${c.unit}</small></span>
+  <div style="display:flex;gap:8px;align-items:center">
+   ${c.qty<=0&&S.list.items.some(i=>i.item===c.id&&!i.done&&!i.removed&&!i.del)?`<span class="sync">${svg(I.check,16,2.25)}ברשימת הקניות</span>`:''}
+   ${c.qty>0?`<button class="sq" data-a="dec" data-id="${c.id}" aria-label="הפחתת ${fmt(c.step)} ${c.unit} מ${esc(c.name)}">${svg(I.minus,22,2.25)}</button>`:''}
+   <button class="sq" data-a="inc" data-id="${c.id}" aria-label="הוספת ${fmt(c.step)} ${c.unit} ל${esc(c.name)}">${svg(I.plus,22,2.25)}</button>
+   ${c.qty>0?`<button class="btn danger" data-a="out" data-id="${c.id}">נגמר</button>`:''}
+  </div></div></div>`}).join(''):`<div class="card empty"><h2>${all.length?'אין פריטים שמתאימים לסינון':'המזווה עוד ריק'}</h2>${all.length?`<button class="btn" data-a="clearFilter">ניקוי סינון</button>`:`<a class="btn pri" href="#catalog">בחירת מצרכים בסיסיים</a>`}</div>`}`;
+}
+
+/* ---------- רשימת קניות ---------- */
+function vShop(){
+ const L=S.list,act=activeList(),open=act.filter(i=>!i.done),done=act.filter(i=>i.done),rem=S.list.items.filter(i=>i.removed&&!i.del);
+ const pct=act.length?Math.round(done.length/act.length*100):0;
+ const est=open.reduce((s,i)=>s+(lastPrice(byId(i.item))||0)*(i.packs||1),0);
+ const order=CATS.map(c=>c.id);
+ const groups=[...new Set(open.map(i=>i.cat))].sort((a,b)=>order.indexOf(a)-order.indexOf(b));
+ const row=i=>{const c=byId(i.item);const p=lastPrice(c);return `<div class="row ${ui.store?'store':''}" style="padding:4px 4px 4px 0;background:${i.done?'var(--bg)':'var(--card)'}">
+  <button data-a="toggleLi" data-id="${i.id}" role="checkbox" aria-checked="${i.done}" aria-label="${esc(i.name)}" style="display:flex;align-items:center;gap:12px;flex:1;min-width:0;border:0;background:none;text-align:right;padding:4px 0 4px 0;min-height:56px">
+   <span style="width:48px;height:48px;display:flex;align-items:center;justify-content:center"><span class="box ${i.done?'on':''}">${i.done?svg(I.check,18,3,'#fff'):''}</span></span>
+   <span class="t"><b style="font-weight:${ui.store?600:500};${i.done?'color:var(--muted);text-decoration:line-through':''}">${esc(i.name)}</b><span>${esc(liQty(i))}${i.done?' · בעגלה':i.src==='manual'&&i.who?' · הוסיף/ה: '+esc(i.who):i.reason?' · '+esc(i.reason):''}${p&&!ui.store&&!i.done?` · כ־₪${fmt(p*(i.packs||1))}`:''}${i.carry?' · מהשבוע הקודם':''}</span></span>
+  </button>
+  ${ui.store?'':`<span class="tag ${i.src==='auto'?'auto':'man'}">${svg(i.src==='auto'?I.auto:I.pen,14,2.25)}${i.src==='auto'?'אוטומטי':'ידני'}</span>`}
+  <button class="sq" style="background:transparent;width:40px" data-a="editLi" data-id="${i.id}" aria-label="עריכת ${esc(i.name)}">${svg(I.more,22,3)}</button></div>`};
+ const stLabel={draft:'טיוטה',approved:'מאושרת',done:'הושלמה'}[L.status];
+ return `<header class="hdr"><div class="col"><h1>רשימת קניות</h1><span class="sub">שבועית · ${dm(L.week||today())}–${dm(addDays(L.week||today(),6))} · ${stLabel} · ל־${members().length} בני בית</span></div>
+  <label style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;min-height:48px">מצב סופר<button class="switch" role="switch" aria-checked="${ui.store}" aria-label="מצב סופר" data-a="store"></button></label></header>
+ ${act.length?`<div style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;font-size:14px;font-weight:600"><span>${done.length} מתוך ${act.length} בעגלה</span><span class="sub">נשארו ${open.length}${est?` · כ־₪${Math.round(est)}`:''}</span></div><div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${act.length}" aria-valuenow="${done.length}"><i style="width:${pct}%"></i></div></div>`:''}
+ <form class="field" data-f="addLi">${svg(I.plus,20,2.25,'var(--muted)')}<input id="addLi" list="catNames" placeholder="הוספת פריט לרשימה" autocomplete="off" enterkeyhint="done"><button class="btn link" style="height:40px">הוספה</button></form>
+ <datalist id="catNames">${items().map(c=>`<option value="${esc(c.name)}">`).join('')}</datalist>
+ ${!ui.store&&canManage()?`<div style="display:flex;gap:8px">${L.status==='draft'?`<button class="btn pri" style="flex:1" data-a="approveList">${svg(I.check,20,2.25)}אישור הרשימה</button>`:`<span class="tag ok" style="height:48px;flex:1;justify-content:center;border-radius:12px">${svg(I.check,18,2.25)}מאושרת · גרסה ${L.versions.length}</span>`}<button class="btn ghost" data-a="regen">${svg(I.auto,20)}חישוב מחדש</button></div>`:''}
+ ${!act.length?`<div class="card empty"><span class="big" style="background:var(--green-s)">${svg(I.check,36)}</span><h2>הכול בבית!</h2><span class="sub">אין כרגע מה לקנות. הרשימה הבאה תוכן ביום ${DAYS[S.settings.listDay]}.</span></div>`:''}
+ ${act.length&&!open.length?`<div class="card empty"><span class="big" style="background:var(--green-s)">${svg(I.check,36)}</span><h2>סיימתם! ${done.length} מתוך ${act.length}</h2><span class="sub">בבית, צלמו את החשבונית והמלאי יתעדכן לבד.</span></div>`:''}
+ ${groups.map(g=>{const its=open.filter(i=>i.cat===g);return `<section style="display:flex;flex-direction:column;gap:6px"><h3 class="grp">${catOf(g).name} · ${its.length}</h3><div class="list">${its.map(row).join('')}</div></section>`}).join('')}
+ ${done.length?`<section style="display:flex;flex-direction:column;gap:6px"><h3 class="grp">בעגלה · ${done.length}</h3><div class="list">${(ui.showDone||done.length<=5?done:done.slice(0,5)).map(row).join('')}${done.length>5&&!ui.showDone?`<button class="row" style="justify-content:center;min-height:48px;color:var(--green-d);font-weight:600" data-a="showDone">הצגת כל ${done.length}</button>`:''}</div></section>`:''}
+ ${rem.length&&!ui.store?`<section style="display:flex;flex-direction:column;gap:6px"><h3 class="grp">הוסרו · ${rem.length}</h3><div class="list">${rem.map(i=>`<div class="row" style="min-height:52px"><span class="t"><span style="text-decoration:line-through">${esc(i.name)}</span></span><button class="btn link" data-a="restoreLi" data-id="${i.id}">החזרה</button></div>`).join('')}</div></section>`:''}`;
+}
+
+/* ---------- סריקה ---------- */
+function vScan(){
+ const sc=ui.scan;
+ if(sc&&sc.state==='busy')return `${header('סריקת חשבונית')}<div class="cam">${sc.img?`<img src="${sc.img}" alt="">`:'<span class="paper"></span>'}<span class="scanline"></span></div>
+  <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center"><h2>קוראים את החשבונית…</h2><div class="progress" style="width:100%"><i style="width:${Math.round((sc.p||0)*100)}%"></i></div><span class="sub">${esc(sc.msg||'זה לוקח בדרך כלל עד 10–30 שניות')}</span><button class="btn link" data-a="scanCancel">ביטול</button></div>`;
+ if(sc&&sc.state==='err')return `${header('סריקת חשבונית')}<div class="card empty"><span class="big" style="background:var(--red-s);color:var(--red)">${svg(I.x,36)}</span><h2>לא הצלחנו לקרוא את החשבונית</h2><span class="sub">${esc(sc.msg||'נסו לצלם שוב באור טוב, כשהחשבונית ישרה וכולה בתמונה.')}</span>
+  <button class="btn pri w" data-a="cam">${svg(I.camera,22)}צילום מחדש</button><button class="btn w" data-a="manualReceipt">עדכון מלאי ידני</button></div>`;
+ const pend=S.receipts.filter(r=>r.status==='pending'&&!r.del);
+ return `${header('סריקת חשבונית','צלמו את החשבונית והמלאי יתעדכן אחרי אישור')}
+ <button class="cam" data-a="cam" aria-label="פתיחת המצלמה לצילום חשבונית">
+  <span class="c" style="top:24px;right:72px;border-top-width:4px;border-right-width:4px;border-radius:0 12px 0 0"></span><span class="c" style="top:24px;left:72px;border-top-width:4px;border-left-width:4px;border-radius:12px 0 0 0"></span><span class="c" style="bottom:24px;right:72px;border-bottom-width:4px;border-right-width:4px;border-radius:0 0 12px 0"></span><span class="c" style="bottom:24px;left:72px;border-bottom-width:4px;border-left-width:4px;border-radius:0 0 0 12px"></span>
+  <span class="paper"><i style="width:60%;align-self:center;height:8px;background:#B9B1A4"></i><i></i><i style="width:85%"></i><i style="width:92%"></i><i style="width:70%"></i><i style="width:88%"></i><i style="width:45%;height:8px;background:#B9B1A4;margin-top:8px"></i></span>
+  <span style="position:absolute;bottom:10px;font-size:14px;font-weight:500;color:#ECF1EC">לחיצה פותחת את המצלמה</span></button>
+ <div style="display:flex;flex-direction:column;gap:8px">${[[I.sun,'מקום מואר, בלי צל על החשבונית'],[I.split,'חשבונית ארוכה? צלמו בשני חלקים'],[I.okc,'תמיד תוכלו לבדוק ולתקן לפני העדכון']].map(([i,t])=>`<span style="display:flex;align-items:center;gap:10px">${svg(i,20,2,'var(--green)')}${t}</span>`).join('')}</div>
+ <div style="display:flex;flex-direction:column;gap:8px"><button class="btn pri big" data-a="cam">${svg(I.camera,22)}צילום חשבונית</button><button class="btn w" data-a="gallery">בחירה מהגלריה / PDF</button>
+ <div style="display:flex;gap:8px"><button class="btn link" style="flex:1" data-a="manualReceipt">הזנה ידנית</button><button class="btn link" style="flex:1" data-a="sampleReceipt">חשבונית לדוגמה</button></div></div>
+ ${pend.map(r=>`<button class="banner peach" style="border:0;text-align:right;width:100%" data-a="openReceipt" data-id="${r.id}">${svg(I.clock,22)}<span class="t"><b>חשבונית ממתינה לאישור</b><span>${dayLabel(r.date)} · ${esc(r.store)} · ${r.lines.filter(l=>l.type==='unrec').length} שורות לא זוהו</span></span><b style="color:var(--green-d);display:flex;align-items:center;gap:4px">להמשך${svg(I.chevL,18,2.25)}</b></button>`).join('')}`;
+}
+function curReceipt(){const id=location.hash.split('?')[1];return S.receipts.find(r=>r.id===id)}
+function vReview(){
+ const r=curReceipt();if(!r)return `${subHeader('אישור חשבונית','','','scan')}<div class="card empty"><h2>החשבונית לא נמצאה</h2><a class="btn" href="#scan">חזרה לסריקה</a></div>`;
+ if(r.status==='approved'&&ui.done===r.id){const d=ui.doneInfo||{};return `${subHeader('אישור חשבונית','','','scan')}<div class="card empty"><span class="big" style="background:var(--green-s);color:var(--green-i)">${svg(I.check,36)}</span><h2>המלאי עודכן</h2><span class="sub">${d.n||0} מצרכים עודכנו ו־${d.rm||0} הוסרו מרשימת הקניות.${d.left?` ${d.left} שורות נשמרו בצד.`:''}</span><a class="btn pri w" href="#inv">למלאי</a><span class="sub">${REMOTE?'העדכון נשמר בגיליון':'העדכון נשמר במכשיר'}</span></div>`}
+ const cnt={rec:0,unrec:0,irr:0};r.lines.forEach(l=>cnt[l.type]++);
+ const ord={unrec:0,rec:1,irr:2};
+ const shown=r.lines.filter(l=>ui.rf==='all'||l.type===ui.rf).sort((a,b)=>ord[a.type]-ord[b.type]);
+ const f=(id,label,icon,ink,bg)=>`<button class="counter" data-a="rf" data-v="${id}" aria-pressed="${ui.rf===id}" style="color:var(--${ink});${ui.rf===id?`background:var(--${bg});border:2px solid var(--${ink})`:''}"><b>${svg(icon,16,2.5)}${cnt[id]}</b><span>${label}</span></button>`;
+ const line=l=>{const c=byId(l.item);
+  if(l.type==='rec')return `<div class="rline"><span class="dot" style="background:var(--green-s);color:var(--green-i)">${svg(I.check,18,2.5)}</span><span style="display:flex;flex-direction:column;flex:1;min-width:0"><span class="sub">"${esc(l.raw)}"</span><b>${esc(c?.name||'?')} · ${fmt(l.add)} ${esc(c?.unit||'')}</b></span><span class="mono" style="white-space:nowrap">₪ ${fmt(l.price)}</span><button class="sq" data-a="matchLine" data-id="${l.id}" aria-label="תיקון שורה">${svg(I.pen,20)}</button></div>`;
+  if(l.type==='unrec')return `<div class="rline unrec"><div style="display:flex;gap:12px;align-items:center"><span class="dot" style="background:var(--orange-s);color:var(--orange)">${svg(I.q,18,2.5)}</span><span style="display:flex;flex-direction:column;flex:1"><span class="sub">"${esc(l.raw)}"</span><b style="color:var(--orange)">לא זוהה – בחרו מצרך</b></span><span class="mono" style="white-space:nowrap">₪ ${fmt(l.price)}</span></div><div style="display:flex;gap:8px"><button class="btn pri" style="flex:1" data-a="matchLine" data-id="${l.id}">התאמה למצרך</button><button class="btn ghost" style="border-color:var(--field)" data-a="ignoreLine" data-id="${l.id}">לא רלוונטי</button></div></div>`;
+  return `<div class="rline irr"><span class="dot" style="background:var(--line);color:var(--muted)">${svg(I.minus,18,2.5)}</span><span style="display:flex;flex-direction:column;flex:1"><span style="color:var(--muted);text-decoration:line-through">"${esc(l.raw)}"</span><span class="sub">לא רלוונטי · לא יעודכן במלאי</span></span><button class="btn link" data-a="restoreLine" data-id="${l.id}">החזרה</button></div>`};
+ return `${subHeader('אישור חשבונית',`<span data-a="editReceiptMeta" style="cursor:pointer;text-decoration:underline dotted">${esc(r.store||'חנות')} · ${dmy(r.date)} · ₪ ${fmt(r.total)}</span>`,r.img?`<button class="btn ghost" style="height:48px;padding:0 10px;font-size:14px" data-a="showImg">${svg(I.receipt,18)}תמונה</button>`:'','scan')}
+ <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">${f('unrec','לא זוהו',I.q,'orange','orange-s')}${f('rec','זוהו',I.check,'green-i','green-s')}${f('irr','לא רלוונטי',I.minus,'muted','sand')}</div>
+ ${shown.map(line).join('')||'<div class="card empty"><span class="sub">אין שורות בסינון הזה</span></div>'}
+ <button class="btn ghost w" data-a="addLine">${svg(I.plus,20)}הוספת שורה ידנית</button>
+ <button class="btn link" style="color:var(--red)" data-a="deleteReceipt">מחיקת החשבונית</button>`;
+}
+
+/* ---------- קטלוג ---------- */
+function vCatalog(){
+ const q=normA(ui.q);const all=items();
+ const vis=all.filter(c=>!q||normA(c.name).includes(q)||c.aliases.some(a=>normA(a).includes(q)));
+ const groups=CATS.filter(g=>vis.some(c=>c.cat===g.id));
+ return `${subHeader('קטלוג מצרכים',`${all.length} מצרכים · רשימת הבסיס של הבית`,canManage()?`<button class="btn pri" data-a="newItem">${svg(I.plus,18,2.5)}מצרך חדש</button>`:'')}
+ <label class="field">${svg(I.search,20,2,'var(--muted)')}<input id="catQ" data-in="q" placeholder="חיפוש מצרך" value="${esc(ui.q)}" autocomplete="off"></label>
+ ${groups.map(g=>{const its=vis.filter(c=>c.cat===g.id).sort((a,b)=>a.name.localeCompare(b.name,'he'));return `<section style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:8px"><span class="ico" style="width:28px;height:28px;border-radius:8px;background:var(--c-${g.c})">${svg(g.icon,18)}</span><h2 style="font-size:16px">${g.name}</h2><span class="sub">${its.length} מצרכים</span></div>
+  <div class="list">${its.map(c=>`<button class="row" data-a="editItem" data-id="${c.id}"><span class="t"><span style="font-size:16px;font-weight:500;color:var(--ink)">${esc(c.name)}</span><span>${c.unit}${c.pack!==1?' (אריזה '+fmt(c.pack)+')':''} · מינימום ${fmt(minOf(c))} · ${esc(c.loc)} · צעד ${fmt(c.step)}${c.shelf?' · מעקב תוקף':''}</span></span>${c.customMin!=null&&c.customMin!==''?`<span class="tag man" style="height:24px">מינימום ידני</span>`:''}${svg(I.chevL,20,2,'var(--muted)')}</button>`).join('')}</div></section>`}).join('')}
+ ${!all.length?`<div class="card empty"><h2>עוד אין מצרכים</h2><button class="btn pri" data-a="loadStarter">בחירה מרשימה מוכנה</button></div>`:''}
+ ${canManage()?`<div style="display:flex;gap:8px"><button class="btn ghost" style="flex:1" data-a="importCat">${svg(I.dl,20)}ייבוא מרשימה / גיליון</button><button class="btn ghost" style="flex:1" data-a="mergeCat">איחוד כפולים</button></div>`:''}
+ <span class="sub" style="text-align:center;line-height:1.5">המינימום מחושב לפי פרופיל המשפחה. שינוי ידני יסומן ולא יתעדכן אוטומטית.</span>`;
+}
+
+/* ---------- פרופיל משפחה ---------- */
+function vFamily(){
+ const fam=members();
+ const cnt={};fam.forEach(m=>{const g=groupOf(m).name;cnt[g]=(cnt[g]||0)+1});
+ const usedCats=CATS.filter(c=>items().some(i=>i.cat===c.id));
+ return `${subHeader('פרופיל משפחה')}
+ <section class="card" style="background:var(--green-s);box-shadow:none;padding:16px;display:flex;flex-direction:column;gap:10px"><span style="font-size:28px;line-height:36px;font-weight:700">${fam.length} בני בית</span>
+  <div style="display:flex;flex-wrap:wrap;gap:8px">${Object.entries(cnt).map(([g,n])=>`<span class="tag" style="background:var(--card);color:var(--ink);height:32px">${n} ${g}</span>`).join('')}</div>
+  <span style="line-height:1.5;color:var(--green-i)">הכמויות ברשימה השבועית והמינימום במלאי מחושבים לפי ההרכב הזה (מקדם צריכה כולל ${fmt(fam.reduce((s,m)=>s+S.coef[groupOf(m).id],0))}).</span></section>
+ <section style="display:flex;flex-direction:column;gap:8px"><h2>בני הבית</h2><div class="list">
+  ${fam.map((m,i)=>`<button class="row" style="min-height:72px" data-a="editMember" data-id="${m.id}"><span class="ico" style="border-radius:999px;background:var(--c-${AV[i%AV.length]});font-weight:700;font-size:16px">${esc(m.name[0]||'?')}</span><span class="t"><b>${esc(m.name)}${m.id===user()?.id?' (אני)':''}</b><span>${groupOf(m).name} · ${ageOf(m)}</span></span><span class="tag ${m.role==='member'?'auto':'ok'}" style="font-weight:600">${ROLES[m.role]}</span>${svg(I.chevL,20,2,'var(--muted)')}</button>`).join('')}
+  ${isAdmin()?`<button class="row" style="justify-content:center;color:var(--green-d);font-weight:600" data-a="newMember">${svg(I.plus,20,2.25)}הוספת בן/בת בית</button>`:''}</div></section>
+ <section class="card" style="padding:16px;display:flex;flex-direction:column;gap:12px"><div style="display:flex;gap:12px">${svg(I.link,24,2,'var(--green)')}<span style="display:flex;flex-direction:column;gap:2px"><b>הזמנה לאפליקציה</b><span class="sub" style="line-height:1.5">שלחו קישור לבני הבית. הם יוכלו לעדכן מלאי ולהוסיף לרשימה.</span></span></div><button class="btn w" data-a="invite">שליחת קישור הזמנה</button></section>
+ <details class="card" style="padding:16px"><summary style="font-weight:600;cursor:pointer;min-height:32px">מקדמי צריכה לפי גיל וקטגוריה</summary>
+  <p class="sub" style="line-height:1.5">ערך 1 = צריכה של מבוגר. ערכי הקטגוריה גוברים על ברירת המחדל. ${isAdmin()?'':'רק מנהל/ת פרופיל יכולים לערוך.'}</p>
+  <div style="overflow-x:auto"><table class="coef"><thead><tr><th>קטגוריה</th>${GROUPS.map(g=>`<th>${g.name}<br><span class="sub">${g.range}</span></th>`).join('')}</tr></thead><tbody>
+  <tr><td><b>ברירת מחדל</b></td>${GROUPS.map(g=>`<td><input type="number" step="0.05" min="0" data-ch="coef" data-g="${g.id}" value="${S.coef[g.id]}" ${isAdmin()?'':'disabled'}></td>`).join('')}</tr>
+  ${usedCats.concat(CATS.filter(c=>c.id==='baby'&&!usedCats.includes(c))).map(c=>`<tr><td>${c.name}</td>${GROUPS.map(g=>{const v=S.catCoef[c.id]?.[g.id];return `<td><input type="number" step="0.05" min="0" data-ch="catCoef" data-c="${c.id}" data-g="${g.id}" value="${v??''}" placeholder="${S.coef[g.id]}" ${isAdmin()?'':'disabled'}></td>`}).join('')}</tr>`).join('')}
+  </tbody></table></div></details>
+ <span class="sub" style="text-align:center;line-height:1.5">רק מנהל/ת פרופיל יכולים לשנות את ההרכב ואת ההרשאות.</span>`;
+}
+
+/* ---------- היסטוריה ---------- */
+function vHistory(){
+ const m0=new Date();m0.setDate(1);m0.setHours(0,0,0,0);
+ const mon=S.log.filter(l=>l.t>=m0.getTime());
+ const recs=S.receipts.filter(r=>r.status==='approved'&&!r.del&&new Date(r.date)>=m0);
+ const buys=mon.filter(l=>l.type==='buy');
+ const bought=mon.filter(l=>l.type==='buy'&&l.item).length;
+ const trips=mon.filter(l=>l.type==='buy'&&!l.item).length;
+ const outs=mon.filter(l=>l.type==='out');
+ const outBy={};S.log.filter(l=>l.type==='out'&&l.t>Date.now()-60*DAY).forEach(l=>outBy[l.name]=(outBy[l.name]||0)+1);
+ const top=Object.entries(outBy).sort((a,b)=>b[1]-a[1]).slice(0,3);
+ const spend=recs.reduce((s,r)=>s+(+r.total||0),0);
+ const evs=S.log.filter(l=>ui.histF==='all'||(ui.histF==='buy'?['buy','list'].includes(l.type):['use','out','fix'].includes(l.type))).slice().reverse().slice(0,60);
+ const days={};evs.forEach(e=>{const k=iso(e.t);(days[k]=days[k]||[]).push(e)});
+ const kind={buy:['green-s','green-i',I.receipt],out:['red-s','red',I.x],use:['sand','muted',I.pen],fix:['sand','muted',I.pen],list:['peach','peach-i',I.auto]};
+ const title=e=>e.item?(e.type==='out'?`${e.name} סומן כנגמר`:e.type==='buy'?`${e.name}: נקנו ${fmt(e.delta)} (${fmt(e.prev)} ← ${fmt(e.qty)})`:`${e.name}: ${fmt(e.prev)} ← ${fmt(e.qty)} ${byId(e.item)?.unit||''}`):e.name;
+ const pastLists=S.lists.slice(-4).reverse();
+ return `${subHeader('היסטוריה ודוחות')}
+ <section style="display:flex;flex-direction:column;gap:8px"><h3 class="grp" style="font-size:16px">${m0.toLocaleDateString('he-IL',{month:'long'})} עד היום</h3>
+  <div class="metrics"><div class="metric"><b>${trips}</b><span>קניות</span></div><div class="metric"><b>${bought}</b><span>פריטים נקנו</span></div><div class="metric"><b>${outs.length}</b><span>פעמים "נגמר"</span></div></div>
+  <div class="metrics" style="grid-template-columns:1fr 1fr"><div class="metric"><b>₪${Math.round(spend)}</b><span>הוצאה החודש (מחשבוניות)</span></div><div class="metric"><b>${S.receipts.filter(r=>r.status==='approved'&&!r.del).length}</b><span>חשבוניות בארכיון</span></div></div>
+  ${top.length?`<div class="card" style="padding:12px 16px;display:flex;flex-direction:column;gap:6px"><b>נגמרים הכי מהר</b><span class="sub" style="font-size:16px;line-height:1.5">${top.map(([n,k],i)=>`${esc(n)} (${i?k:k===1?'פעם אחת':k+' פעמים'})`).join(' · ')}</span><span style="font-size:14px;color:var(--peach-i)">כדאי להעלות מינימום ל${esc(top[0][0])}? <a href="#catalog" style="font-weight:600">לקטלוג</a></span></div>`:''}
+ </section>
+ <div class="chips">${[['all','הכול'],['buy','קניות'],['stock','עדכוני מלאי'],['receipts','חשבוניות'],['prices','מחירים']].map(([id,n])=>`<button class="chip" aria-pressed="${ui.histF===id}" data-a="histF" data-v="${id}">${n}</button>`).join('')}</div>
+ ${ui.histF==='receipts'?`<div class="list">${S.receipts.filter(r=>!r.del).slice().reverse().map(r=>`<button class="row" data-a="openReceipt" data-id="${r.id}"><span class="ico" style="background:var(--green-s);color:var(--green-i)">${svg(I.receipt,20)}</span><span class="t"><b>${esc(r.store)} · ₪${fmt(r.total)}</b><span>${dmy(r.date)} · ${r.status==='approved'?'אושרה':'ממתינה'}</span></span>${svg(I.chevL,20,2,'var(--muted)')}</button>`).join('')||'<div class="empty sub">אין חשבוניות</div>'}</div>`
+ :ui.histF==='prices'?`<div class="list">${items().filter(c=>c.prices.length).map(c=>{const p=c.prices,l=p[p.length-1],f=p.length>1?p[p.length-2].p:null;return `<div class="row"><span class="t"><b>${esc(c.name)}</b><span>${p.slice(-4).map(x=>dm(x.d)+': ₪'+fmt(x.p)).join(' · ')}</span></span><span class="tag ${f==null?'auto':l.p>f?'out':l.p<f?'ok':'auto'}">₪${fmt(l.p)}</span></div>`}).join('')||'<div class="empty sub">עוד אין מחירים. הם נאספים מחשבוניות.</div>'}</div>`
+ :Object.entries(days).map(([d,es])=>`<section style="display:flex;flex-direction:column;gap:6px"><h3 class="grp">${dayLabel(d)}</h3><div class="list">${es.map(e=>{const k=kind[e.type]||kind.use;return `<div class="row"><span class="ico" style="border-radius:999px;width:36px;height:36px;background:var(--${k[0]});color:var(--${k[1]})">${svg(k[2],18,2.25)}</span><span class="t"><span style="font-size:16px;font-weight:500;color:var(--ink)">${esc(title(e))}</span><span>${hm(e.t)} · ${esc(e.by||'')}${e.store?' · '+esc(e.store):''}</span></span></div>`}).join('')}</div></section>`).join('')||'<div class="card empty sub">אין אירועים</div>'}
+ ${ui.histF==='buy'&&pastLists.length?`<h3 class="grp">רשימות קודמות</h3><div class="list">${pastLists.map(l=>`<div class="row"><span class="t"><b>שבוע ${dm(l.week)}</b><span>${l.items.length} פריטים · ${l.items.filter(i=>i.done).length} נקנו</span></span></div>`).join('')}</div>`:''}`;
+}
+
+/* ---------- עוד והגדרות ---------- */
+function vMore(){
+ const st=S.settings;
+ return `<header class="hdr"><h1>עוד</h1>${syncBadge()}</header>
+ <div class="list">${[['catalog','קטלוג מצרכים',`${items().length} מצרכים, יחידות ומינימום`,I.list],['family','פרופיל משפחה',`${members().length} בני בית`,I.people],['history','היסטוריה ודוחות','קניות, עדכוני מלאי והוצאות',I.hist]].map(([h,l,s,i])=>`<a class="row" href="#${h}"><span class="ico" style="background:var(--green-s);color:var(--green-d)">${svg(i,22)}</span><span class="t"><b>${l}</b><span>${s}</span></span>${svg(I.chevL,20,2,'var(--muted)')}</a>`).join('')}</div>
+ <section style="display:flex;flex-direction:column;gap:8px"><h2>הגדרות</h2>
+ <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:12px">
+  <div style="display:flex;align-items:center;gap:12px"><span class="ico" style="background:var(--green-s);color:var(--green-d)">${svg(I.sheet,22)}</span><span class="t" style="display:flex;flex-direction:column;flex:1"><b>גיליון משותף (Google Sheets)</b><span class="sub">"${esc(st.sheetName)}"</span></span></div>
+  ${REMOTE?`${syncBadge()}<div style="display:flex;gap:8px"><button class="btn" style="flex:1" data-a="openSheet">פתיחת הגיליון</button><button class="btn ghost" style="flex:1" data-a="syncNow">סנכרון עכשיו</button></div>`
+  :`<span class="sub" style="line-height:1.5">מצב מקומי: הנתונים נשמרים במכשיר הזה. לשיתוף בין בני הבית, פרסמו את האפליקציה מתוך הגיליון (Apps Script) – ההוראות בקובץ README.</span><div style="display:flex;gap:8px"><button class="btn" style="flex:1" data-a="exportCsv">${svg(I.dl,20)}ייצוא לגיליון (CSV)</button></div>`}
+ </div>
+ <div class="list">
+  <button class="row" data-a="listSettings"><span class="t"><b>רשימה שבועית חדשה</b><span>כל יום ${DAYS[st.listDay]} ב־${String(st.listHour).padStart(2,'0')}:00 · מלאי ביטחון ${st.safetyDays} ימים</span></span>${svg(I.chevL,20,2,'var(--muted)')}</button>
+  ${[['ready','רשימה שבועית מוכנה','התראה כשהרשימה החדשה נוצרת'],['out','משהו נגמר בבית','כשבן בית מסמן "נגמר"'],['exp','תוקף קרוב',`${st.expDays} ימים לפני תאריך התוקף`]].map(([id,l,s])=>`<button class="row" role="switch" aria-checked="${!!st.notif[id]}" data-a="notif" data-v="${id}"><span class="t"><b>${l}</b><span>${s}</span></span><span class="switch" aria-checked="${!!st.notif[id]}"></span></button>`).join('')}
+ </div>
+ <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px"><b>מי משתמש/ת במכשיר הזה?</b>
+  <div class="chips" style="margin:0;padding:0;flex-wrap:wrap">${members().map(m=>`<button class="chip" aria-pressed="${user()?.id===m.id}" data-a="setMe" data-id="${m.id}">${esc(m.name)}</button>`).join('')}</div>
+  <span class="sub">העדכונים ביומן נרשמים על שם המשתמש/ת שנבחר/ה.</span></div>
+ <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px"><b>מראה</b>
+  <div class="seg" role="group" aria-label="מראה">${[['light','בהיר'],['dark','כהה'],['system','לפי הטלפון']].map(([id,l])=>`<button aria-pressed="${st.theme===id}" data-a="theme" data-v="${id}">${l}</button>`).join('')}</div>
+  <span class="sub">גודל הטקסט נקבע לפי הגדרות הטלפון.</span></div>
+ <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px"><b>גיבוי וייצוא</b>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" style="flex:1" data-a="exportJson">${svg(I.dl,20)}ייצוא כל הנתונים</button><button class="btn ghost" style="flex:1" data-a="importJson">שחזור מגיבוי</button></div>
+  <button class="btn link" style="color:var(--red)" data-a="resetDemo">איפוס לנתוני הדגמה</button></div>
+ </section>
+ <span class="sub" style="text-align:center">מחובר/ת בתור ${esc(user()?.name||'')} · ${ROLES[user()?.role]||''}</span>`;
+}
+
+const VIEWS={home:vHome,inv:vInv,shop:vShop,scan:vScan,review:vReview,catalog:vCatalog,family:vFamily,history:vHistory,more:vMore,settings:vMore};
+const FOOT={
+ shop:()=>activeList().length?`<button class="btn pri big" data-a="finish">${svg(I.check,20,2.25)}סיימתי לקנות</button>`:'',
+ review:()=>{const r=curReceipt();if(!r||(r.status==='approved'&&ui.done===r.id))return '';const n=r.lines.filter(l=>l.type==='rec').length,u=r.lines.filter(l=>l.type==='unrec').length;
+  return `<span class="sub" style="text-align:center">${u?u+' שורות שלא זוהו יישמרו בצד ולא יעודכנו':'הכול מוכן. המלאי '+(REMOTE?'והגיליון המשותף יתעדכנו':'יתעדכן')}</span><button class="btn pri big" data-a="approveReceipt" ${n&&canManage()?'':'disabled'}>${svg(I.check,20,2.25)}${canManage()?`אישור ועדכון מלאי (${n})`:'רק אחראי/ת קניות יכולים לאשר'}</button>`}
+};
+
+/* ================== גיליונות (Bottom sheets) ================== */
+let SH=null;
+function openSheet(type,data={}){SH={type,...data};renderSheet()}
+function closeSheet(){SH=null;renderSheet()}
+function renderSheet(){
+ const el=$('#sheet');if(!SH){el.innerHTML='';return}
+ const body=SHEETS[SH.type](SH);
+ el.innerHTML=`<div class="scrim" data-a="scrim"><div class="sheet" role="dialog" aria-modal="true"><span class="grab"></span>${body}</div></div>`;
+ const f=el.querySelector('[autofocus]');if(f&&!SH.noFocus){f.focus();SH.noFocus=true}
+}
+const opt=(v,l,cur)=>`<option value="${esc(v)}" ${String(v)===String(cur)?'selected':''}>${esc(l)}</option>`;
+const sheetHead=(t,s)=>`<div style="display:flex;flex-direction:column"><span style="font-size:20px;font-weight:600">${t}</span>${s?`<span class="sub">${s}</span>`:''}</div>`;
+const SHEETS={
+ missing(sh){const q=normA(sh.q||'');const list=items().filter(c=>!q||normA(c.name).includes(q)).sort((a,b)=>({out:0,low:1,exp:2,ok:3}[status(a)]-{out:0,low:1,exp:2,ok:3}[status(b)])).slice(0,8);
+  return `${sheetHead('מה חסר בבית?','לחיצה אחת – והפריט נכנס לרשימת הקניות')}
+  <form class="field" data-f="missingFree">${svg(I.search,20,2,'var(--muted)')}<input id="missQ" data-in="sheetQ" autofocus placeholder="חיפוש או שם פריט חדש" value="${esc(sh.q||'')}" autocomplete="off"></form>
+  <div class="list" style="box-shadow:none;border:1px solid var(--line)">${list.map(c=>{const on=S.list.items.some(i=>i.item===c.id&&!i.done&&!i.removed&&!i.del);return `<button class="row" style="min-height:56px" data-a="missingPick" data-id="${c.id}">${catIco(c.cat)}<span class="t"><b>${esc(c.name)}</b><span>${fmt(c.qty)} ${c.unit} בבית</span></span>${on?`<span class="sync">${svg(I.check,16)}ברשימה</span>`:svg(I.plus,22,2.25,'var(--green)')}</button>`}).join('')}
+  ${sh.q&&!list.some(c=>normA(c.name)===q)?`<button class="row" style="min-height:56px;color:var(--green-d);font-weight:600" data-a="missingFree">${svg(I.plus,20)}הוספת "${esc(sh.q)}" כפריט חופשי</button>`:''}</div>
+  <label class="chk"><input type="checkbox" id="missOut" ${sh.out?'checked':''} data-ch="missOut"> לסמן גם במלאי כ"נגמר"</label>
+  <button class="btn link" data-a="close">סגירה</button>`},
+ stock(sh){const c=byId(sh.id);return `${sheetHead(esc(c.name),`${catOf(c.cat).name} · מינימום ${fmt(minOf(c))} ${c.unit}`)}
+  <form class="form" data-f="stock" data-id="${c.id}"><label>כמות מדויקת (${c.unit})<input name="qty" type="number" step="any" min="0" inputmode="decimal" value="${c.qty}" autofocus></label>
+  <label>מיקום<select name="loc">${LOCS.map(l=>opt(l,l,c.loc)).join('')}</select></label>
+  <label class="full">תוקף${c.shelf?'':' (אופציונלי)'}<input name="expiry" type="date" value="${c.expiry||''}"></label>
+  <span class="sub full" style="grid-column:1/-1">עודכן ${c.qu?ago(c.qu):''}${c.by?' על ידי '+esc(c.by):''}</span>
+  <button class="btn pri big full" style="grid-column:1/-1">שמירה</button></form>
+  <div style="display:flex;gap:8px"><button class="btn ghost" style="flex:1" data-a="addToList" data-id="${c.id}">${svg(I.bag,20)}לרשימת הקניות</button>${canManage()?`<button class="btn ghost" style="flex:1" data-a="editItem" data-id="${c.id}">${svg(I.pen,20)}עריכה בקטלוג</button>`:''}</div>
+  <button class="btn link" data-a="close">ביטול</button>`},
+ item(sh){const c=sh.id?byId(sh.id):{name:sh.name||'',cat:sh.cat||'other',unit:'יחידות',pack:1,weekly:1,loc:'מזווה',step:1,customMin:null,shelf:0,aliases:sh.alias?[sh.alias]:[],preferred:'',alts:'',qty:0,prices:[]};
+  const others=items().filter(x=>x.id!==c.id);
+  return `${sheetHead(sh.id?'עריכת מצרך':'מצרך חדש',sh.id?`צריכה צפויה: ${fmt(expectedWeekly(c))} ${c.unit} בשבוע למשפחה`:'')}
+  <form class="form" data-f="item" data-id="${sh.id||''}" data-rl="${sh.rl||''}">
+   <label class="full">שם<input name="name" required value="${esc(c.name)}" autofocus></label>
+   <label>קטגוריה<select name="cat">${CATS.map(g=>opt(g.id,g.name,c.cat)).join('')}</select></label>
+   <label>מיקום בבית<select name="loc">${LOCS.map(l=>opt(l,l,c.loc)).join('')}</select></label>
+   <label>יחידת מידה<input name="unit" list="units" value="${esc(c.unit)}"></label>
+   <label>גודל אריזה<input name="pack" type="number" step="any" min="0.01" value="${c.pack}"></label>
+   <label>צריכה שבועית למבוגר<input name="weekly" type="number" step="any" min="0" value="${c.weekly}"></label>
+   <label>צעד עדכון (+/−)<input name="step" type="number" step="any" min="0.01" value="${c.step}"></label>
+   <label>מינימום ידני<input name="customMin" type="number" step="any" min="0" value="${c.customMin??''}" placeholder="אוטומטי: ${sh.id?fmt(autoMin(c)):'לפי פרופיל'}"></label>
+   <label>תוקף ממוצע (ימים)<input name="shelf" type="number" min="0" value="${c.shelf||''}" placeholder="לא מתכלה"></label>
+   ${sh.id?'':`<label class="full">כמות בבית עכשיו<input name="qty" type="number" step="any" min="0" value="${c.qty}"></label>`}
+   <label class="full">שמות חלופיים בחשבוניות (מופרדים בפסיק)<input name="aliases" value="${esc(c.aliases.join(', '))}"></label>
+   <label>מוצר מועדף<input name="preferred" value="${esc(c.preferred||'')}" placeholder="למשל: תנובה"></label>
+   <label>חלופות מקובלות<input name="alts" value="${esc(c.alts||'')}"></label>
+   ${c.prices?.length?`<span class="sub full" style="grid-column:1/-1">מחירים אחרונים: ${c.prices.slice(-4).map(p=>dm(p.d)+' ₪'+fmt(p.p)).join(' · ')}</span>`:''}
+   <button class="btn pri big" style="grid-column:1/-1">${sh.id?'שמירה':'הוספה לקטלוג'}</button>
+  </form><datalist id="units">${['יחידות','ליטר','ק״ג','גרם','חבילות','אריזות','בקבוקים','קופסאות','כיכרות','שישיות'].map(u=>`<option value="${u}">`).join('')}</datalist>
+  ${sh.id?`<div style="display:flex;gap:8px;align-items:center"><select id="mergeTo" style="flex:1;height:48px;border-radius:12px;border:1.5px solid var(--field);background:var(--card);padding:0 8px"><option value="">איחוד עם מצרך אחר…</option>${others.map(o=>opt(o.id,o.name)).join('')}</select><button class="btn ghost" data-a="mergeItem" data-id="${c.id}">איחוד</button></div>
+  <button class="btn danger w" data-a="delItem" data-id="${c.id}">${svg(I.trash,20)}מחיקה מהקטלוג</button>`:''}
+  <button class="btn link" data-a="${sh.back||'close'}">ביטול</button>`},
+ member(sh){const m=sh.id?S.family.find(x=>x.id===sh.id):{name:'',birth:'',role:'member',email:''};const ed=isAdmin();
+  return `${sheetHead(sh.id?esc(m.name):'בן/בת בית חדש/ה',sh.id?`${groupOf(m).name} · גיל ${ageOf(m)}`:'')}
+  <form class="form" data-f="member" data-id="${sh.id||''}"><label class="full">שם או כינוי<input name="name" required value="${esc(m.name)}" ${ed?'':'disabled'} autofocus></label>
+  <label>תאריך לידה<input name="birth" type="date" required value="${m.birth}" ${ed?'':'disabled'}></label>
+  <label>תפקיד<select name="role" ${ed?'':'disabled'}>${Object.entries(ROLES).map(([k,v])=>opt(k,v,m.role)).join('')}</select></label>
+  <label class="full">מייל Google (להתראות ושיתוף)<input name="email" type="email" value="${esc(m.email||'')}" ${ed?'':'disabled'} dir="ltr"></label>
+  ${ed?`<button class="btn pri big" style="grid-column:1/-1">שמירה</button>`:''}</form>
+  ${ed&&sh.id&&members().length>1?`<button class="btn danger w" data-a="delMember" data-id="${m.id}">${svg(I.trash,20)}הסרה מהבית</button>`:''}
+  <button class="btn link" data-a="close">סגירה</button>`},
+ li(sh){const i=S.list.items.find(x=>x.id===sh.id);const c=byId(i.item);
+  return `${sheetHead(esc(i.name),`${i.src==='auto'?'הוצע אוטומטית':'נוסף ידנית'}${i.reason?' · '+esc(i.reason):''}${i.who?' · '+esc(i.who):''}`)}
+  <form class="form" data-f="li" data-id="${i.id}">${c?`<label class="full">כמות (${c.pack!==1?'אריזות של '+fmt(c.pack)+' '+c.unit:c.unit})<input name="packs" type="number" step="${c.unit==='ק״ג'?c.step:1}" min="0" value="${i.packs}" autofocus></label>`:`<label class="full">כמות<input name="qtyText" value="${esc(i.qtyText||'')}" autofocus></label><label class="full">קטגוריה<select name="cat">${CATS.map(g=>opt(g.id,g.name,i.cat)).join('')}</select></label>`}
+  <label class="full">הערה<input name="note" value="${esc(i.note||'')}" placeholder="למשל: רק בלי לקטוז"></label>
+  <button class="btn pri big" style="grid-column:1/-1">שמירה</button></form>
+  <div style="display:flex;gap:8px"><button class="btn ghost" style="flex:1" data-a="carryLi" data-id="${i.id}">${svg(I.next,20)}לשבוע הבא</button><button class="btn danger" style="flex:1" data-a="removeLi" data-id="${i.id}">${svg(I.trash,20)}הסרה</button></div>
+  ${!c&&canManage()?`<button class="btn link" data-a="liToCatalog" data-id="${i.id}">הוספה לקטלוג הקבוע</button>`:''}
+  <button class="btn link" data-a="close">ביטול</button>`},
+ finish(){const act=activeList(),done=act.filter(i=>i.done),left=act.filter(i=>!i.done);
+  return `${sheetHead(`סיימתם! ${done.length} מתוך ${act.length}`,'איך לעדכן את המלאי?')}
+  <button class="btn pri big" data-a="finishScan">${svg(I.camera,22)}סריקת חשבונית (מומלץ)</button>
+  <button class="btn w" data-a="finishManual">עדכון מלאי בלי חשבונית</button>
+  ${left.length?`<label class="chk"><input type="checkbox" id="carryLeft" checked> להעביר ${left.length} פריטים שלא נמצאו לשבוע הבא</label>`:''}
+  <span class="sub">"עדכון בלי חשבונית" מוסיף למלאי את הכמויות שסומנו ברשימה.</span>
+  <button class="btn link" data-a="close">חזרה לרשימה</button>`},
+ match(sh){const r=curReceipt();const l=r.lines.find(x=>x.id===sh.id);const q=normA(sh.q||'');
+  const sugg=q?items().filter(c=>normA(c.name).includes(q)||dice(norm(c.name),q)>.4).slice(0,6).map(c=>({c,hint:catOf(c.cat).name})):suggest(l.raw).map(x=>({c:x.c,hint:Math.round(x.s*100)+'% התאמה'}));
+  const c=byId(l.item);
+  return `${sheetHead('לאיזה מצרך זה שייך?',`בחשבונית: "${esc(l.raw)}" · ₪${fmt(l.price)}`)}
+  <form class="field" data-f="noop">${svg(I.search,20,2,'var(--muted)')}<input id="matchQ" data-in="sheetQ" placeholder="חיפוש בקטלוג" value="${esc(sh.q||'')}" autocomplete="off"></form>
+  <div class="list" style="box-shadow:none;border:1px solid var(--line)">${sugg.map(({c:x,hint})=>`<button class="row" style="min-height:56px" data-a="pickMatch" data-id="${x.id}"><span class="t"><span style="font-weight:500;color:var(--ink);font-size:16px">${esc(x.name)}</span></span><span class="sub">${esc(hint)}</span></button>`).join('')||'<div class="row sub">אין הצעות</div>'}</div>
+  ${c?`<form class="form" data-f="lineQty"><label>כמות שנכנסת למלאי (${c.unit})<input name="add" type="number" step="any" min="0" value="${l.add}"></label><label>מחיר (₪)<input name="price" type="number" step="any" value="${l.price}"></label><button class="btn pri" style="grid-column:1/-1">שמירת שורה</button></form>`:''}
+  <button class="btn w" data-a="newFromLine">${svg(I.plus,20)}מצרך חדש מהשורה הזו</button>
+  <span class="sub" style="text-align:center">נזכור את ההתאמה לפעם הבאה</span>
+  <button class="btn link" data-a="close">ביטול</button>`},
+ lineNew(){return `${sheetHead('הוספת שורה ידנית')}<form class="form" data-f="lineNew"><label class="full">טקסט / שם פריט<input name="raw" required autofocus list="catNames2"></label><label>כמות<input name="n" type="number" step="any" min="0" value="1"></label><label>מחיר (₪)<input name="price" type="number" step="any" value="0"></label><button class="btn pri big" style="grid-column:1/-1">הוספה</button></form><datalist id="catNames2">${items().map(c=>`<option value="${esc(c.name)}">`).join('')}</datalist><button class="btn link" data-a="close">ביטול</button>`},
+ rmeta(){const r=curReceipt();return `${sheetHead('פרטי החשבונית')}<form class="form" data-f="rmeta"><label class="full">חנות<input name="store" value="${esc(r.store)}"></label><label>תאריך<input name="date" type="date" value="${r.date}"></label><label>סכום (₪)<input name="total" type="number" step="any" value="${r.total}"></label><button class="btn pri big" style="grid-column:1/-1">שמירה</button></form><button class="btn link" data-a="close">ביטול</button>`},
+ img(){const r=curReceipt();return `${sheetHead('תמונת החשבונית')}<img src="${r.img}" alt="חשבונית" style="width:100%;border-radius:12px">${r.ocr?`<details><summary class="sub">הטקסט שזוהה</summary><pre style="white-space:pre-wrap;font-size:13px">${esc(r.ocr)}</pre></details>`:''}<button class="btn link" data-a="close">סגירה</button>`},
+ dup(sh){return `${sheetHead('נראה שהחשבונית הזו כבר נקלטה','אותה חנות, תאריך וסכום כמו חשבונית שאושרה')}<span class="sub">אישור נוסף יוסיף את הכמויות למלאי פעם שנייה.</span><button class="btn danger w" data-a="approveForce">לעדכן בכל זאת</button><button class="btn pri w" data-a="close">ביטול</button>`},
+ listSet(){const s=S.settings;return `${sheetHead('רשימה שבועית')}<form class="form" data-f="listSet"><label>יום הפקה<select name="listDay">${DAYS.map((d,i)=>opt(i,d,s.listDay)).join('')}</select></label><label>שעה<input name="listHour" type="number" min="0" max="23" value="${s.listHour}"></label>
+  <label>מלאי ביטחון (ימים)<input name="safetyDays" type="number" min="0" max="14" value="${s.safetyDays}"></label><label>מינימום אוטומטי (ימי צריכה)<input name="minDays" type="number" min="0" step="0.5" value="${s.minDays}"></label>
+  <label>התראת תוקף (ימים לפני)<input name="expDays" type="number" min="0" value="${s.expDays}"></label><label>שם המשפחה<input name="familyName" value="${esc(s.familyName)}"></label>
+  <label class="chk full"><input type="checkbox" name="autoList" ${s.autoList?'checked':''}> להפיק רשימה אוטומטית ביום שנקבע</label>
+  <button class="btn pri big" style="grid-column:1/-1">שמירה</button></form><button class="btn ghost w" data-a="regenNow">${svg(I.auto,20)}הפקת רשימה חדשה עכשיו</button><button class="btn link" data-a="close">ביטול</button>`},
+ importCat(){return `${sheetHead('ייבוא מצרכים','הדביקו שורות מגיליון: שם, קטגוריה, יחידה, צריכה שבועית, מיקום, כמות')}<form class="form" data-f="importCat"><label class="full"><textarea name="txt" autofocus placeholder="חלב 1%, חלב וביצים, ליטר, 1, מקרר, 2&#10;שוקולד, חטיפים ומתוקים, יחידות, 0.5, מזווה, 1"></textarea></label><button class="btn pri big" style="grid-column:1/-1">ייבוא</button></form><button class="btn link" data-a="close">ביטול</button>`},
+ mergeCat(){const its=items();const pairs=[];for(let i=0;i<its.length;i++)for(let j=i+1;j<its.length;j++){const s=dice(norm(its[i].name),norm(its[j].name));if(s>.6)pairs.push([its[i],its[j],s])}
+  return `${sheetHead('איחוד מצרכים כפולים','מצרכים עם שמות דומים מאוד')}${pairs.length?`<div class="list" style="box-shadow:none;border:1px solid var(--line)">${pairs.map(([a,b])=>`<div class="row"><span class="t"><b>${esc(a.name)} + ${esc(b.name)}</b><span>הכמויות והכינויים יאוחדו</span></span><button class="btn" data-a="mergePair" data-a1="${a.id}" data-b="${b.id}">איחוד</button></div>`).join('')}</div>`:'<span class="sub">לא נמצאו כפולים. אפשר לאחד ידנית מתוך עריכת מצרך.</span>'}<button class="btn link" data-a="close">סגירה</button>`},
+ importJson(){return `${sheetHead('שחזור מגיבוי')}<input type="file" id="jsonFile" accept="application/json" class="btn w"><button class="btn link" data-a="close">ביטול</button>`}
+};
+
+/* ================== חשבוניות: OCR, פענוח, התאמה ================== */
+function suggest(raw,n=3){
+ const r=norm(raw);if(!r)return [];
+ return items().map(c=>{let s=dice(r,norm(c.name));c.aliases.forEach(a=>{s=Math.max(s,normA(a)===normA(raw)?1:dice(r,norm(a)))});const toks=norm(c.name).split(' ').filter(t=>t.length>1);if(toks.length&&toks.every(t=>r.includes(t)))s=Math.max(s,.8);return {c,s}}).sort((a,b)=>b.s-a.s).slice(0,n);
+}
+function addQtyFor(c,n){return c?r1(c.pack===1?n:n*c.pack):n}
+function matchLines(lines){
+ return lines.map((l,i)=>{const base={id:i+1,raw:l.raw,price:l.price,n:l.n};
+  if(IRR.test(l.raw)||l.price<0)return {...base,type:'irr'};
+  const best=suggest(l.raw,1)[0];
+  if(best&&best.s>=.62)return {...base,type:'rec',item:best.c.id,add:addQtyFor(best.c,l.n)};
+  return {...base,type:'unrec'};
+ });
+}
+function parseReceipt(text){
+ const rows=text.split(/\n+/).map(s=>s.replace(/\s+/g,' ').trim()).filter(Boolean);
+ let store='',date=today(),total=0;const lines=[];
+ for(const row of rows){
+  const dmatch=row.match(/(\d{1,2})[./-](\d{1,2})[./-](\d{2,4})/);
+  if(dmatch&&!lines.length&&date===today()){let y=+dmatch[3];if(y<100)y+=2000;const d=new Date(y,+dmatch[2]-1,+dmatch[1]);if(!isNaN(d)&&y>2000)date=iso(d);continue}
+  if(/סה"?כ|לתשלום|total|סך הכל/i.test(row)){const m=row.match(/(\d{1,5}[.,]\d{2})/g);if(m)total=parseFloat(m[m.length-1].replace(',','.'));continue}
+  const pm=row.match(/(-?\d{1,4}[.,]\d{2})\s*-?$/)||row.match(/^-?\s*(\d{1,4}[.,]\d{2})/);
+  if(!pm){if(!store&&/[א-ת]{2,}/.test(row))store=row.slice(0,40);continue}
+  const price=parseFloat(pm[1].replace(',','.'))*(/-/.test(row.replace(/\d-\d/g,''))&&/הנח/.test(row)?-1:1);
+  let n=1;const qm=row.match(/(\d+(?:[.,]\d+)?)\s*[xX×*]\s*\d/)||row.match(/\d\s*[xX×*]\s*(\d+(?:[.,]\d+)?)/);if(qm)n=parseFloat(qm[1].replace(',','.'));
+  const wm=row.match(/(\d+[.,]\d{3})\s*(ק"?ג|kg)?/);if(wm)n=parseFloat(wm[1].replace(',','.'));
+  const name=row.replace(pm[0],'').replace(/\d+[.,]?\d*\s*[xX×*]/g,'').replace(/-?\d{1,4}[.,]\d{2,3}/g,'').replace(/[₪*]/g,'').replace(/\s+\d{6,}\s*/g,' ').trim();
+  if(!/[א-תa-zA-Z]{2,}/.test(name))continue;
+  if(!store&&!lines.length&&!price)continue;
+  lines.push({raw:name.slice(0,48),price:Math.abs(price)*(price<0?-1:1),n:n>0&&n<100?n:1});
+ }
+ if(!total)total=r1(lines.reduce((s,l)=>s+l.price,0));
+ return {store:store||'חנות',date,total,lines};
+}
+const loadScript=src=>new Promise((res,rej)=>{if(document.querySelector(`script[src="${src}"]`))return res();const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('טעינת רכיב הזיהוי נכשלה. בדקו חיבור לאינטרנט.'));document.head.appendChild(s)});
+async function fileToImage(file){
+ if(file.type==='application/pdf'){
+  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const pdf=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;const page=await pdf.getPage(1);const vp=page.getViewport({scale:2.5});
+  const cv=document.createElement('canvas');cv.width=vp.width;cv.height=vp.height;await page.render({canvasContext:cv.getContext('2d'),viewport:vp}).promise;return cv;
+ }
+ const url=URL.createObjectURL(file);const img=new Image();await new Promise((r,j)=>{img.onload=r;img.onerror=()=>j(new Error('הקובץ אינו תמונה תקינה'));img.src=url});
+ const sc=Math.min(1,2000/Math.max(img.width,img.height));const cv=document.createElement('canvas');cv.width=img.width*sc;cv.height=img.height*sc;
+ const x=cv.getContext('2d');x.filter='grayscale(1) contrast(1.4)';x.drawImage(img,0,0,cv.width,cv.height);return cv;
+}
+function thumb(cv){const sc=Math.min(1,900/cv.height);const t=document.createElement('canvas');t.width=cv.width*sc;t.height=cv.height*sc;t.getContext('2d').drawImage(cv,0,0,t.width,t.height);return t.toDataURL('image/jpeg',.6)}
+let scanToken=0;
+async function handleFile(file){
+ if(!file)return;const tok=++scanToken;
+ ui.scan={state:'busy',p:0,msg:'מכינים את התמונה…'};go('scan');render();
+ try{
+  const cv=await fileToImage(file);if(tok!==scanToken)return;
+  const img=thumb(cv);ui.scan.img=img;ui.scan.msg='טוענים רכיב זיהוי עברית (בפעם הראשונה בלבד)…';render();
+  await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js');
+  const res=await Tesseract.recognize(cv,'heb+eng',{logger:m=>{if(tok!==scanToken)return;if(m.status==='recognizing text'){ui.scan.p=m.progress;ui.scan.msg='מזהים שורות…';const b=document.querySelector('.progress i');if(b)b.style.width=Math.round(m.progress*100)+'%'}}});
+  if(tok!==scanToken)return;
+  const text=res.data.text||'';const conf=res.data.confidence||0;
+  const p=parseReceipt(text);
+  if(p.lines.length<2||conf<35){ui.scan={state:'err',msg:p.lines.length?'הצילום לא מספיק חד. נסו לצלם שוב באור טוב, כשהחשבונית ישרה וכולה בתמונה.':undefined};render();return}
+  const r=touch({id:'r'+uid(),date:p.date,store:p.store,total:p.total,status:'pending',img,ocr:text,lines:matchLines(p.lines)});
+  S.receipts.push(r);save();ui.scan=null;ui.rf='all';
+  if(REMOTE)gs('saveReceiptImage',img,`${r.date} ${r.store}.jpg`).then(u=>{r.fileUrl=u;touch(r);save()}).catch(()=>{});
+  go('review?'+r.id);
+ }catch(e){if(tok!==scanToken)return;ui.scan={state:'err',msg:e.message};render()}
+}
+function approveReceipt(force){
+ const r=curReceipt();if(!r)return;
+ if(!force){const dup=S.receipts.find(x=>x.id!==r.id&&!x.del&&x.status==='approved'&&x.date===r.date&&normA(x.store)===normA(r.store)&&Math.abs((+x.total)-(+r.total))<.01);if(dup)return openSheet('dup')}
+ const undo=snapshotUndo();let n=0,rm=0;
+ r.lines.filter(l=>l.type==='rec').forEach(l=>{const c=byId(l.item);if(!c)return;
+  setQty(c,c.qty+(+l.add||0),'buy',true);S.log[S.log.length-1].rid=r.id;n++;
+  if(l.price>0)c.prices.push({d:r.date,p:r1(l.price/(+l.n||1)),store:r.store});
+  const a=normA(l.raw);if(a&&a!==normA(c.name)&&!c.aliases.map(normA).includes(a))c.aliases.push(l.raw);
+  touch(c);
+  S.list.items.filter(i=>i.item===c.id&&!i.del&&!i.removed).forEach(i=>{if(c.qty>=minOf(c)){i.done=true;i.bought=true;touch(i);rm++}});
+ });
+ r.status='approved';r.nItems=n;r.approvedBy=user()?.name;touch(r);
+ S.log.push(touch({id:uid(),t:Date.now(),item:null,name:`קנייה אושרה · ${n} פריטים עודכנו`,type:'buy',by:user()?.name,store:r.store}));
+ ui.done=r.id;ui.doneInfo={n,rm,left:r.lines.filter(l=>l.type==='unrec').length};
+ save();closeSheet();render();snack('המלאי עודכן',undo);
+}
+
+/* ================== אירועים ================== */
+const A={
+ seen(d){const n=S.notices.find(x=>x.id===d.id);if(n){n.seen=true;touch(n);save();render()}},
+ missing(){openSheet('missing',{q:'',out:false})},
+ missingPick(d){const c=byId(d.id);const undo=snapshotUndo();if(SH?.out&&c.qty>0)setQty(c,0,'out');const li=ensureOnList(c);li.src='manual';li.who=user()?.name;li.removed=false;touch(li);touch(S.list);save();closeSheet();render();snack(`${c.name} נוסף לרשימה`,undo)},
+ missingFree(){const name=(SH?.q||'').trim();if(!name)return;const ex=items().find(c=>normA(c.name)===normA(name));if(ex)return A.missingPick({id:ex.id});
+  S.list.items.push(touch({id:uid(),item:null,name,cat:'other',qtyText:'1',src:'manual',who:user()?.name,done:false}));touch(S.list);save();closeSheet();render();snack(`${name} נוסף לרשימה`)},
+ searchOpen(){ui.searchOpen=true;render();$('#invQ')?.focus()},
+ searchClose(){ui.searchOpen=false;ui.q='';render()},
+ loc(d){ui.loc=d.v;render()},cat(d){ui.cat=d.v;render()},clearFilter(){ui.loc='all';ui.cat='all';ui.q='';render()},
+ inc(d){const c=byId(d.id);setQty(c,c.qty+c.step,'fix');render()},
+ dec(d){const c=byId(d.id);setQty(c,c.qty-c.step,'use');render()},
+ out(d){const c=byId(d.id);const undo=snapshotUndo();setQty(c,0,'out');render();snack(`${c.name} סומן כנגמר ונוסף לרשימה`,undo)},
+ editStock(d){openSheet('stock',{id:d.id})},
+ addToList(d){const c=byId(d.id);const li=ensureOnList(c,'נוסף ידנית');li.src='manual';li.who=user()?.name;touch(li);save();closeSheet();render();snack(`${c.name} נוסף לרשימה`)},
+ store(){ui.store=!ui.store;if(ui.store&&navigator.wakeLock)navigator.wakeLock.request('screen').then(l=>ui.wake=l).catch(()=>{});else if(ui.wake){ui.wake.release();ui.wake=null}render()},
+ toggleLi(d){const i=S.list.items.find(x=>x.id===d.id);i.done=!i.done;i.by=user()?.name;touch(i);touch(S.list);save();render()},
+ editLi(d){openSheet('li',{id:d.id})},
+ removeLi(d){const i=S.list.items.find(x=>x.id===d.id);i.removed=true;touch(i);touch(S.list);save();closeSheet();render();snack(`${i.name} הוסר מהרשימה`,()=>{i.removed=false;touch(i);save()})},
+ restoreLi(d){const i=S.list.items.find(x=>x.id===d.id);i.removed=false;touch(i);save();render()},
+ carryLi(d){const i=S.list.items.find(x=>x.id===d.id);i.carry=true;i.removed=true;touch(i);save();closeSheet();render();snack(`${i.name} יועבר לרשימה של שבוע הבא`)},
+ liToCatalog(d){const i=S.list.items.find(x=>x.id===d.id);openSheet('item',{name:i.name,cat:i.cat,liId:i.id})},
+ showDone(){ui.showDone=true;render()},
+ approveList(){S.list.status='approved';S.list.versions.push({t:Date.now(),by:user()?.name,items:activeList().map(i=>({name:i.name,q:liQty(i),src:i.src}))});touch(S.list);
+  S.log.push(touch({id:uid(),t:Date.now(),item:null,name:`רשימת הקניות אושרה · ${activeList().length} פריטים`,type:'list',by:user()?.name}));save();render();snack('הרשימה אושרה ונשמרה כגרסה שבועית')},
+ regen(){const undo=snapshotUndo();const L=S.list;items().forEach(c=>{const r=calcNeed(c);const ex=L.items.find(i=>i.item===c.id&&!i.del&&!i.done);if(r&&!ex)L.items.push(touch({id:uid(),item:c.id,name:c.name,cat:c.cat,packs:r.packs,src:'auto',reason:r.reason,done:false}));else if(r&&ex&&ex.src==='auto'){ex.packs=r.packs;ex.reason=r.reason;touch(ex)}});
+  L.status='draft';touch(L);save();render();snack('הרשימה חושבה מחדש לפי המלאי והפרופיל',undo)},
+ finish(){openSheet('finish')},
+ finishScan(){A._finish(false);go('scan')},
+ finishManual(){A._finish(true)},
+ _finish(updateStock){
+  const carry=$('#carryLeft')?.checked;const undo=snapshotUndo();const act=activeList();let n=0;
+  if(updateStock)act.filter(i=>i.done&&i.item).forEach(i=>{const c=byId(i.item);if(c){setQty(c,c.qty+addQtyFor(c,i.packs),'buy',true);n++}});
+  S.lists.push(touch({id:S.list.id,week:S.list.week,status:'done',items:act.map(i=>({...i})),versions:S.list.versions}));
+  S.list.items.forEach(i=>{if(i.done)i.del=true;else if(carry){i.carry=true}touch(i)});
+  S.list.status='draft';touch(S.list);
+  S.log.push(touch({id:uid(),t:Date.now(),item:null,name:updateStock?`קנייה הושלמה · ${n} פריטים עודכנו במלאי`:'קנייה הושלמה · ממתין לחשבונית',type:'buy',by:user()?.name}));
+  save();closeSheet();render();snack(updateStock?`${n} פריטים עודכנו במלאי`:'צלמו את החשבונית כדי לעדכן את המלאי',undo)},
+ cam(){$('#fileCam').click()},gallery(){$('#fileAny').click()},
+ scanCancel(){scanToken++;ui.scan=null;render()},
+ sampleReceipt(){const r=touch({id:'r'+uid(),date:today(),store:'סופר השכונה',total:156.3,status:'pending',img:'',lines:matchLines([{raw:'חלב 3% קרטון 1ל',price:13.8,n:2},{raw:'ביצים L 12',price:14.9,n:1},{raw:'במב אסם 80גר',price:4.9,n:1},{raw:'פיתות כפריות 10',price:9.9,n:1},{raw:'מלפפון',price:7.4,n:1},{raw:'שוקולד פרה',price:6.9,n:1},{raw:'שקית ניילון',price:.1,n:1}])});S.receipts.push(r);save();ui.rf='all';go('review?'+r.id)},
+ manualReceipt(){const r=touch({id:'r'+uid(),date:today(),store:'חנות',total:0,status:'pending',img:'',lines:[]});S.receipts.push(r);save();ui.scan=null;go('review?'+r.id);setTimeout(()=>openSheet('lineNew'),50)},
+ openReceipt(d,el,e){e.preventDefault();ui.rf='all';ui.done=null;go('review?'+d.id)},
+ rf(d){ui.rf=ui.rf===d.v?'all':d.v;render()},
+ matchLine(d){openSheet('match',{id:+d.id,q:''})},
+ ignoreLine(d){const l=curReceipt().lines.find(x=>x.id===+d.id);l.type='irr';touch(curReceipt());save();render()},
+ restoreLine(d){const l=curReceipt().lines.find(x=>x.id===+d.id);l.type=l.item?'rec':'unrec';touch(curReceipt());save();render()},
+ pickMatch(d){const r=curReceipt();const l=r.lines.find(x=>x.id===SH.id);const c=byId(d.id);l.item=c.id;l.type='rec';l.add=addQtyFor(c,l.n||1);touch(r);save();closeSheet();render()},
+ newFromLine(){const r=curReceipt();const l=r.lines.find(x=>x.id===SH.id);const raw=l.raw.replace(/\d+/g,'').trim();openSheet('item',{name:raw,alias:l.raw,rl:l.id,back:'close'})},
+ addLine(){openSheet('lineNew')},
+ editReceiptMeta(){openSheet('rmeta')},showImg(){openSheet('img')},
+ deleteReceipt(){if(!confirm('למחוק את החשבונית? המלאי לא ישתנה.'))return;const r=curReceipt();r.del=true;touch(r);save();go('scan')},
+ approveReceipt(){approveReceipt(false)},approveForce(){approveReceipt(true)},
+ newItem(){openSheet('item',{})},editItem(d){if(!canManage())return snack('רק אחראי/ת קניות יכולים לערוך את הקטלוג');openSheet('item',{id:d.id})},
+ delItem(d){const c=byId(d.id);if(!confirm(`למחוק את "${c.name}" מהקטלוג?`))return;const undo=snapshotUndo();c.del=true;touch(c);S.list.items.filter(i=>i.item===c.id).forEach(i=>{i.del=true;touch(i)});save();closeSheet();render();snack(`${c.name} נמחק`,undo)},
+ mergeItem(d){const to=$('#mergeTo').value;if(!to)return;mergeItems(to,d.id);closeSheet();render()},
+ mergePair(d){mergeItems(d.a1,d.b);renderSheet();render()},
+ importCat(){openSheet('importCat')},mergeCat(){openSheet('mergeCat')},
+ loadStarter(){const s=seed().catalog;s.forEach(c=>{c.qty=0;c.id='c'+uid();touch(c)});S.catalog.push(...s);save();render();snack(`${s.length} מצרכים נוספו לקטלוג`)},
+ newMember(){openSheet('member',{})},editMember(d){openSheet('member',{id:d.id})},
+ delMember(d){const m=S.family.find(x=>x.id===d.id);if(!confirm(`להסיר את ${m.name}?`))return;const before=totalFactor();m.del=true;touch(m);save();closeSheet();render();impact(before)},
+ invite(){const url=location.href.split('#')[0];const text=`הצטרפו לניהול המצרכים של משפחת ${S.settings.familyName}: ${url}`;if(navigator.share)navigator.share({title:'מצרכים בבית',text,url}).catch(()=>{});else{navigator.clipboard?.writeText(url);snack('קישור ההזמנה הועתק')}},
+ histF(d){ui.histF=d.v;render()},
+ listSettings(){openSheet('listSet')},
+ regenNow(){closeSheet();generateList(false);save();go('shop');snack('רשימה שבועית חדשה הופקה')},
+ notif(d){S.settings.notif[d.v]=!S.settings.notif[d.v];touch(S.settings);save();render()},
+ setMe(d){me=d.id;try{localStorage.setItem('hg-me',me)}catch(e){}render()},
+ theme(d){S.settings.theme=d.v;touch(S.settings);save();render()},
+ openSheet(){gs('getSheetUrl').then(u=>window.open(u,'_blank')).catch(()=>snack('לא הצלחנו לפתוח את הגיליון'))},
+ syncNow(){setSync('saving');pushRemote().then(()=>pullRemote())},
+ exportJson(){download(`מצרכים-גיבוי-${today()}.json`,JSON.stringify(S,null,1),'application/json')},
+ importJson(){openSheet('importJson');setTimeout(()=>{$('#jsonFile').onchange=e=>{const f=e.target.files[0];f.text().then(t=>{const d=JSON.parse(t);if(d.v!==2)throw 0;S=d;save();closeSheet();render();snack('הנתונים שוחזרו')}).catch(()=>snack('קובץ גיבוי לא תקין'))}},50)},
+ exportCsv(){const rows=[['פריט','קטגוריה','מיקום','כמות','יחידה','מינימום','מצב'],...items().map(c=>[c.name,catOf(c.cat).name,c.loc,c.qty,c.unit,minOf(c),ST[status(c)]?.[0]||'תקין']),[],['רשימת קניות – שבוע '+dm(S.list.week)],['✓','פריט','כמות','קטגוריה','מקור','סיבה'],...activeList().map(i=>[i.done?'V':'',i.name,liQty(i),catOf(i.cat).name,i.src==='auto'?'אוטומטי':'ידני',i.reason||i.who||''])];
+  download(`מצרכים-${today()}.csv`,'﻿'+rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n'),'text/csv')},
+ resetDemo(){if(!confirm('לאפס את כל הנתונים לנתוני ההדגמה?'))return;S=seed();firstSeed();save();go('home');render()},
+ close(){closeSheet()},
+ scrim(d,el,e){if(e.target===el)closeSheet()}
+};
+function download(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+function mergeItems(keepId,dropId){const k=byId(keepId),d=byId(dropId);const undo=snapshotUndo();
+ k.qty=r1(k.qty+d.qty);k.aliases=[...new Set([...k.aliases,d.name,...d.aliases])];k.prices=[...k.prices,...d.prices].sort((a,b)=>a.d<b.d?-1:1);touch(k);
+ S.list.items.filter(i=>i.item===d.id).forEach(i=>{i.item=k.id;i.name=k.name;touch(i)});S.log.filter(l=>l.item===d.id).forEach(l=>l.item=k.id);
+ d.del=true;touch(d);save();snack(`"${d.name}" אוחד עם "${k.name}"`,undo)}
+function impact(before){const after=totalFactor();if(!before)return;const p=Math.round((after/before-1)*100);if(p)snack(`הצריכה השבועית צפויה ${p>0?'לעלות':'לרדת'} בכ־${Math.abs(p)}%`)}
+
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;const a=A[el.dataset.a];if(!a)return;if(el.tagName==='A'&&el.dataset.a!=='seen')e.preventDefault();a(el.dataset,el,e)});
+document.addEventListener('input',e=>{const k=e.target.dataset.in;if(k==='q'){ui.q=e.target.value;render()}else if(k==='sheetQ'){SH.q=e.target.value;renderSheet();const el=$('#'+e.target.id);if(el){el.focus();el.setSelectionRange(el.value.length,el.value.length)}}});
+document.addEventListener('change',e=>{const t=e.target,k=t.dataset.ch;
+ if(k==='missOut')SH.out=t.checked;
+ if(k==='coef'||k==='catCoef'){const before=totalFactor();const v=t.value===''?null:Math.max(0,+t.value);
+  if(k==='coef'){if(v!=null)S.coef[t.dataset.g]=v}else{S.catCoef[t.dataset.c]=S.catCoef[t.dataset.c]||{};if(v==null)delete S.catCoef[t.dataset.c][t.dataset.g];else S.catCoef[t.dataset.c][t.dataset.g]=v}
+  S.coefU=Date.now();save();impact(before);render()}
+});
+document.addEventListener('submit',e=>{e.preventDefault();const f=e.target,k=f.dataset.f,fd=Object.fromEntries(new FormData(f));const num=v=>v===''||v==null?null:+v;
+ if(k==='addLi'){const v=$('#addLi').value.trim();if(!v)return;const c=items().find(x=>normA(x.name)===normA(v));
+  if(c){const li=ensureOnList(c,'נוסף ידנית');li.src='manual';li.who=user()?.name;touch(li)}else S.list.items.push(touch({id:uid(),item:null,name:v,cat:'other',qtyText:'1',src:'manual',who:user()?.name,done:false}));
+  touch(S.list);save();render();$('#addLi').focus();snack(`${v} נוסף לרשימה`)}
+ if(k==='missingFree')A.missingFree();
+ if(k==='stock'){const c=byId(f.dataset.id);const q=num(fd.qty)??c.qty;c.loc=fd.loc;c.expiry=fd.expiry;touch(c);if(q!==c.qty)setQty(c,q,q<c.qty?'use':'fix');else save();closeSheet();render();snack(`${c.name} עודכן ל־${fmt(c.qty)} ${c.unit}`)}
+ if(k==='item'){const id=f.dataset.id;const before=null;
+  const data={name:fd.name.trim(),cat:fd.cat,loc:fd.loc,unit:fd.unit.trim()||'יחידות',pack:num(fd.pack)||1,weekly:num(fd.weekly)||0,step:num(fd.step)||1,customMin:num(fd.customMin),shelf:num(fd.shelf)||0,aliases:fd.aliases.split(',').map(s=>s.trim()).filter(Boolean),preferred:fd.preferred,alts:fd.alts};
+  if(!data.name)return;
+  let c;if(id){c=byId(id);Object.assign(c,data);touch(c)}else{if(items().some(x=>normA(x.name)===normA(data.name))&&!confirm('מצרך בשם הזה כבר קיים. להוסיף בכל זאת?'))return;
+   c=touch({id:'c'+uid(),...data,qty:num(fd.qty)||0,expiry:'',prices:[],qu:Date.now(),by:user()?.name});S.catalog.push(c)}
+  if(SH.rl){const r=curReceipt();const l=r.lines.find(x=>x.id===+SH.rl);l.item=c.id;l.type='rec';l.add=addQtyFor(c,l.n||1);touch(r)}
+  if(SH.liId){const li=S.list.items.find(x=>x.id===SH.liId);li.item=c.id;li.packs=1;touch(li)}
+  save();closeSheet();render();snack(id?'המצרך עודכן':`${c.name} נוסף לקטלוג`)}
+ if(k==='member'){const id=f.dataset.id;const before=totalFactor();let m;
+  if(id){m=S.family.find(x=>x.id===id);Object.assign(m,{name:fd.name.trim(),birth:fd.birth,role:fd.role,email:fd.email.trim()});touch(m)}
+  else{m=touch({id:'m'+uid(),name:fd.name.trim(),birth:fd.birth,role:fd.role,email:fd.email.trim()});S.family.push(m)}
+  if(!members().some(x=>x.role==='admin')){m.role='admin';snack('חייב להיות לפחות מנהל/ת פרופיל אחד/ת')}
+  S.groupsSeen[m.id]=groupOf(m).id;save();closeSheet();render();impact(before)}
+ if(k==='li'){const i=S.list.items.find(x=>x.id===f.dataset.id);if(fd.packs!=null)i.packs=Math.max(0,+fd.packs);if(fd.qtyText!=null)i.qtyText=fd.qtyText;if(fd.cat)i.cat=fd.cat;i.note=fd.note;touch(i);touch(S.list);save();closeSheet();render()}
+ if(k==='lineQty'){const r=curReceipt();const l=r.lines.find(x=>x.id===SH.id);l.add=+fd.add;l.price=+fd.price;touch(r);save();closeSheet();render()}
+ if(k==='lineNew'){const r=curReceipt();const id=Math.max(0,...r.lines.map(l=>l.id))+1;const [m]=matchLines([{raw:fd.raw,price:+fd.price||0,n:+fd.n||1}]);m.id=id;const exact=items().find(c=>normA(c.name)===normA(fd.raw));if(exact){m.type='rec';m.item=exact.id;m.add=addQtyFor(exact,+fd.n||1)}
+  r.lines.push(m);r.total=r1(r.lines.filter(l=>l.type!=='irr'||l.price<0).reduce((s,l)=>s+(+l.price||0),0));touch(r);save();closeSheet();render()}
+ if(k==='rmeta'){const r=curReceipt();r.store=fd.store;r.date=fd.date;r.total=+fd.total;touch(r);save();closeSheet();render()}
+ if(k==='listSet'){const s=S.settings;Object.assign(s,{listDay:+fd.listDay,listHour:+fd.listHour,safetyDays:+fd.safetyDays,minDays:+fd.minDays,expDays:+fd.expDays,familyName:fd.familyName,autoList:!!fd.autoList});touch(s);save();closeSheet();render()}
+ if(k==='importCat'){let n=0;fd.txt.split(/\n/).map(l=>l.split(/[,\t;]/).map(s=>s.trim())).filter(p=>p[0]).forEach(([name,cat,unit,weekly,loc,qty])=>{if(items().some(c=>normA(c.name)===normA(name)))return;const g=CATS.find(c=>c.name===cat||c.id===cat)||CATS.find(c=>cat&&c.name.includes(cat))||CATS[CATS.length-1];
+  S.catalog.push(touch({id:'c'+uid(),name,cat:g.id,unit:unit||'יחידות',pack:1,weekly:+weekly||1,loc:LOCS.includes(loc)?loc:'מזווה',step:unit==='ק״ג'?.5:1,qty:+qty||0,customMin:null,shelf:0,expiry:'',aliases:[],preferred:'',alts:'',prices:[],qu:Date.now(),by:user()?.name}));n++});
+  save();closeSheet();render();snack(`${n} מצרכים יובאו`)}
+});
+$('#fileCam').onchange=e=>{handleFile(e.target.files[0]);e.target.value=''};
+$('#fileAny').onchange=e=>{handleFile(e.target.files[0]);e.target.value=''};
+window.addEventListener('online',()=>{setSync(ui.sync);if(REMOTE)pushRemote()});window.addEventListener('offline',()=>setSync(ui.sync));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&SH)closeSheet()});
+
+/* ================== בדיקות תקופתיות ================== */
+function periodic(){
+ const before=JSON.stringify(S);
+ // מעבר קבוצת גיל
+ members().forEach(m=>{const g=groupOf(m).id;const prev=S.groupsSeen[m.id];if(prev&&prev!==g){const gn=GROUPS.find(x=>x.id===g).name;notice(`${m.name} עבר/ה לקבוצת "${gn}" – מקדמי הצריכה עודכנו`,'family');if(REMOTE)gs('notify','שינוי בפרופיל המשפחה',`${m.name} עבר/ה לקבוצת גיל "${gn}". הכמויות ברשימה יתעדכנו.`).catch(()=>{})}S.groupsSeen[m.id]=g});
+ // רשימה שבועית אוטומטית
+ const s=S.settings,now=new Date();
+ if(s.autoList){const ws=weekStartFor(now);const due=now.getDay()!==s.listDay||now.getHours()>=s.listHour;if(S.list.week&&S.list.week<ws&&due)generateList(false)}
+ if(!S.list.week)S.list.week=weekStartFor();
+ // התראות תוקף
+ if(s.notif.exp)items().forEach(c=>{const e=expDaysLeft(c);if(e!=null&&e<=s.expDays&&c.expNotified!==c.expiry){c.expNotified=c.expiry;notice(`${c.name} ${expText(c)}`,'inv')}});
+ const after=JSON.stringify(S);if(after!==before)save();
+}
+if(!S||S.v!==2){S=seed();firstSeed()}
+periodic();
+ui.route=(location.hash.slice(1)||'home').split('?')[0];
+render();
+if(REMOTE){setSync('saving');gs('whoAmI').then(email=>{const m=members().find(x=>x.email&&x.email.toLowerCase()===String(email).toLowerCase());if(m&&!localStorage.getItem('hg-me')){me=m.id;render()}}).catch(()=>{});pullRemote(true);setInterval(()=>pullRemote(false),20000)}
+setInterval(()=>{periodic();if(!SH&&!document.activeElement?.matches('input,textarea,select'))render()},6e4);
+</script>
 </body>
 </html>
