@@ -130,6 +130,30 @@ table.coef input{width:52px;height:36px;border:1.5px solid var(--field);border-r
 .mono{font-variant-numeric:tabular-nums}
 .row.store{min-height:72px}.row.store .t b{font-size:20px}
 @media (min-width:900px){.app{max-width:760px}.nav,.footer{max-width:760px}.fab{left:calc(50% - 364px)}.snack{max-width:728px}}
+/* צ'אט עם הסוכן */
+.chatfab{position:fixed;z-index:20;right:max(16px,calc(50% - 264px));bottom:calc(100px + env(safe-area-inset-bottom));width:56px;height:56px;border:0;border-radius:999px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:var(--float)}
+.chatfab.up{bottom:calc(196px + env(safe-area-inset-bottom))}
+.chatfab.test{bottom:calc(168px + env(safe-area-inset-bottom));background:var(--peach-2);color:#1F2A24;font-size:14px;font-weight:700}
+.chatfab.test.up{bottom:calc(264px + env(safe-area-inset-bottom))}
+.chat .av.test{background:var(--peach);color:var(--peach-i)}
+.chat{position:fixed;inset:0;z-index:80;background:rgba(18,24,21,.45);display:flex;justify-content:center;align-items:flex-end}
+.chat .win{background:var(--bg);width:100%;max-width:560px;height:min(88vh,720px);border-radius:24px 24px 0 0;display:flex;flex-direction:column;overflow:hidden;box-shadow:var(--float)}
+.chat .top{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+.chat .av{background:var(--green-s);color:var(--green-d);width:40px;height:40px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.chat .msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.chat .m{max-width:85%;padding:10px 14px;border-radius:16px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.chat .m.user{align-self:flex-start;background:var(--green);color:#fff;border-end-start-radius:4px}
+.chat .m.model{align-self:flex-end;background:var(--card);border:1px solid var(--line);border-end-end-radius:4px}
+.chat .m.err{align-self:center;background:var(--red-s);color:var(--red);font-size:14px}
+.chat .m .src{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:13px}
+.chat .acts{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-end;max-width:85%}
+.chat .acts button{height:36px;border-radius:999px;border:1.5px solid var(--green);background:var(--card);color:var(--green-d);font-size:14px;font-weight:600;padding:0 12px}
+.chat .typing{align-self:flex-end;color:var(--muted);font-size:14px}
+.chat form{display:flex;gap:8px;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--line)}
+.chat form input{flex:1;min-width:0;height:48px;border-radius:12px;border:1.5px solid var(--field);background:var(--card);padding:0 12px}
+.chat .sugg{display:flex;flex-wrap:wrap;gap:6px;align-self:flex-end;justify-content:flex-end}
+.chat .sugg button{height:36px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 12px;font-size:14px}
+@media (min-width:900px){.chatfab{right:calc(50% - 364px)}.chat .win{max-width:760px}}
 </style>
 </head>
 <body>
@@ -139,6 +163,8 @@ table.coef input{width:52px;height:36px;border:1.5px solid var(--field);border-r
 <nav class="nav" id="nav" aria-label="ניווט ראשי"></nav>
 <div class="snack" id="snack" role="status"><span id="snackText"></span><button id="snackBtn" class="hide">ביטול</button></div>
 <div id="sheet"></div>
+<div id="chatBtn"></div>
+<div id="chat"></div>
 <input type="file" id="fileCam" accept="image/*" capture="environment" class="hide">
 <input type="file" id="fileAny" accept="image/*,application/pdf" class="hide">
 
@@ -146,6 +172,7 @@ table.coef input{width:52px;height:36px;border:1.5px solid var(--field);border-r
 /* ================== קבועים ואייקונים ================== */
 const I={
  home:'M3 10.5 12 3l9 7.5 M5 9.5V21h14V9.5 M10 21v-6h4v6',inv:'M21 8 12 3 3 8v8l9 5 9-5z M3 8l9 5 9-5 M12 13v8',bag:'M5 7h14l-1.5 12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2z M9 7V5a3 3 0 0 1 6 0v2',
+ chat:'M4 5h16v11H9l-5 4z M8 9.5h8 M8 12.5h5',
  receipt:'M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z M9 8h6 M9 12h6',menu:'M4 6h16 M4 12h16 M4 18h16',plus:'M12 5v14 M5 12h14',minus:'M5 12h14',check:'M5 12.5l4.5 4.5L19 7',
  chevL:'M15 6l-6 6 6 6',back:'M5 12h14 M13 6l6 6-6 6',search:'M4 11a7 7 0 1 0 14 0a7 7 0 1 0-14 0 M20 20l-4-4',cloud:'M7 18a5 5 0 1 1 1-9.9A6 6 0 0 1 19 10a4 4 0 0 1 0 8z M9 13l2 2 4-4',
  cloudOff:'M7 18a5 5 0 1 1 1-9.9A6 6 0 0 1 19 10a4 4 0 0 1 0 8z M4 4l16 16',x:'M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0 M9 9l6 6 M15 9l-6 6',clock:'M3 12a9 9 0 1 0 18 0a9 9 0 1 0-18 0 M12 7v5l3 2',
@@ -449,6 +476,7 @@ function render(){
  $('#footer').innerHTML=foot?`<div class="footer">${foot}</div>`:'';
  if(foot)app.classList.add('has-footer');
  $('#fab').innerHTML=['home','inv'].includes(ui.route)?`<button class="fab" data-a="missing">${svg(I.plus,22,2.5)}חסר בבית</button>`:'';
+ $('#chatBtn').innerHTML=CHAT.open?'':`<button class="chatfab${foot?' up':''}" data-a="chatOpen" data-agent="home" aria-label="צ'אט עם הסוכן של הבית">${svg(I.chat,26)}</button><button class="chatfab test${foot?' up':''}" data-a="chatOpen" data-agent="test" aria-label="צ'אט בדיקה">טסט</button>`;
  const tab=TABOF[ui.route]||'home',oc=openCount();
  $('#nav').innerHTML=TABS.map(([id,l,ic])=>`<a href="#${id}" class="${tab===id?'on':''}" ${tab===id?'aria-current="page"':''}><span class="pill">${svg(ic)}</span>${l}${id==='shop'&&oc?`<span class="badge">${oc}</span>`:''}</a>`).join('');
  renderSheet();
@@ -944,7 +972,14 @@ const A={
   download(`מצרכים-${today()}.csv`,'﻿'+rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n'),'text/csv')},
  resetDemo(){if(!confirm('לאפס את כל הנתונים לנתוני ההדגמה?'))return;S=seed();firstSeed();save();go('home');render()},
  close(){closeSheet()},
- scrim(d,el,e){if(e.target===el)closeSheet()}
+ scrim(d,el,e){if(e.target===el)closeSheet()},
+ chatOpen(d){CHAT.open=AGENTS[d.agent]?d.agent:'home';renderChat();render()},
+ chatClose(){CHAT.open=null;renderChat();render()},
+ chatScrim(d,el,e){if(e.target===el)A.chatClose()},
+ chatAsk(d){chatSend(d.q)},
+ chatClear(){CHAT.log[CHAT.open]=[];chatStore();renderChat()},
+ chatKeyReset(){try{localStorage.removeItem('hg-gemini-key')}catch(e){}renderChat()},
+ chatAdd(d){const c=byId(d.id);if(!c)return;const li=ensureOnList(c,'נוסף מהצ\'אט');li.src='manual';li.who=user()?.name;touch(li);touch(S.list);save();render();cm().push({role:'model',text:`הוספתי את ${c.name} לרשימת הקניות ✓`,local:true});chatStore();renderChat()}
 };
 function download(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
 function mergeItems(keepId,dropId){const k=byId(keepId),d=byId(dropId);const undo=snapshotUndo();
@@ -1008,6 +1043,91 @@ function periodic(){
  if(s.notif.exp)items().forEach(c=>{const e=expDaysLeft(c);if(e!=null&&e<=s.expDays&&c.expNotified!==c.expiry){c.expNotified=c.expiry;notice(`${c.name} ${expText(c)}`,'inv')}});
  const after=JSON.stringify(S);if(after!==before)save();
 }
+/* ================== צ'אט עם הסוכן (Gemini) ================== */
+// כל צ'אט הוא סוכן עם הנחיה משלו. ההנחיות זהות לאלה שב־AGENTS ב־Code.gs.
+// ctx: האם לצרף לכל שאלה את המלאי ורשימת הקניות.
+const AGENTS={
+ home:{name:'הסוכן של הבית',sub:'שאלות על המלאי והקניות',ctx:true,cls:'',
+  instruction:'בכל פעם שהמשתמש ישאל על מלאי צריכה של תענה לו אם קיים או שצריך להוסיף לרשימת קניות',
+  welcome:'שלום! אפשר לשאול אותי מה יש בבית, מה נגמר ומה צריך להוסיף לרשימת הקניות.',
+  sugg:['מה חסר בבית?','יש לנו חלב?','מה צריך לקנות השבוע?','מה עומד לפוג תוקף?']},
+ test:{name:'צ\'אט טסט',sub:'Gemini 3.1 Flash Lite',ctx:false,cls:' test',model:'gemini-3.1-flash-lite',
+  instruction:'כל שאלה שאתה מקבל תחזיר לי את המילה טסט',
+  welcome:'זה צ\'אט הטסט (Gemini 3.1 Flash Lite). כל שאלה תחזיר "טסט".',
+  sugg:['שלום','מה השעה?']}
+};
+const CHAT={open:null,busy:false,log:{home:[],test:[]}};
+// השיחה של צ'אט הטסט הקודם לא נטענת: מתחילים אותה מחדש.
+try{const old=JSON.parse(sessionStorage.getItem('hg-chats')||'{}');delete old.test;Object.assign(CHAT.log,old)}catch(e){}
+const cm=()=>CHAT.log[CHAT.open];
+function chatStore(){try{Object.values(CHAT.log).forEach(a=>{if(a.length>40)a.splice(0,a.length-40)});sessionStorage.setItem('hg-chats',JSON.stringify(CHAT.log))}catch(e){}}
+// מחלצים רק את המפתח עצמו (אותיות לטיניות, ספרות, . _ -). תווים נסתרים או טקסט שהודבק איתו שוברים את הכותרת של fetch.
+const cleanKey=v=>(String(v||'').match(/[A-Za-z0-9._-]{20,}/)||[''])[0];
+const localKey=()=>{try{return cleanKey(localStorage.getItem('hg-gemini-key'))}catch(e){return ''}};
+function agentContext(){
+ const open=activeList().filter(i=>!i.done);
+ const STN={out:'נגמר',exp:'תוקף קרוב',low:'מתחת למינימום',ok:'יש מספיק'};
+ const inv=items().map(c=>{const on=open.some(i=>i.item===c.id);const e=expText(c);return `- ${c.name}: ${fmt(c.qty)} ${c.unit} (מינימום ${fmt(minOf(c))}, ${STN[status(c)]}${c.loc?', '+c.loc:''}${e?', '+e:''}${on?', כבר ברשימת הקניות':''})`});
+ return `היום ${new Date().toLocaleDateString('he-IL')}. משפחת ${S.settings.familyName}, ${members().length} נפשות.\nמלאי:\n${inv.join('\n')||'אין פריטים'}\nרשימת הקניות הפתוחה: ${open.map(i=>i.name).join(', ')||'ריקה'}`;
+}
+async function askLocal(history,context,agent){
+ // מצב מקומי (בלי Apps Script): קריאה ישירה מהדפדפן, עם מפתח ששמור במכשיר הזה בלבד.
+ const ag=AGENTS[agent];
+ const body={systemInstruction:{parts:[{text:ag.instruction+(ag.ctx?'\n\nענה בעברית, בקצרה. אלה נתוני הבית העדכניים:\n'+context:'')}]},contents:history.map(m=>({role:m.role,parts:[{text:m.text}]})),tools:[{google_search:{}}],generationConfig:{thinkingConfig:{thinkingLevel:'MINIMAL'}}};
+ const FALLBACK='gemini-flash-lite-latest';let model=ag.model||FALLBACK;
+ const call=()=>fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':localKey()},body:JSON.stringify(body)});
+ let r=await call(),d=await r.json();
+ if(r.status===400&&/thinking/i.test(JSON.stringify(d))){delete body.generationConfig;r=await call();d=await r.json()}
+ if(r.status===429){delete body.tools;r=await call();d=await r.json()}
+ // 503 = הדגם עמוס אצל Google. מנסים שוב אחרי המתנה קצרה, ואם עדיין עמוס עוברים לדגם הרגיל.
+ for(const wait of [1500,3000]){if(r.status!==503&&r.status!==500)break;await new Promise(f=>setTimeout(f,wait));r=await call();d=await r.json()}
+ if((r.status===503||r.status===500)&&model!==FALLBACK){model=FALLBACK;r=await call();d=await r.json()}
+ if(!r.ok)throw new Error(d.error?.message||('שגיאה '+r.status));
+ const c=d.candidates?.[0]||{};
+ return {text:(c.content?.parts||[]).map(p=>p.text||'').join('').trim()||'לא התקבלה תשובה מהסוכן.',sources:(c.groundingMetadata?.groundingChunks||[]).filter(x=>x.web).slice(0,4).map(x=>({title:x.web.title,uri:x.web.uri}))};
+}
+// מצרכים מהקטלוג שהסוכן הזכיר, שנגמרו או נמוכים ועוד לא ברשימה: מוצעים להוספה בלחיצה.
+function chatSuggestAdd(text){
+ const open=activeList().filter(i=>!i.done);
+ return items().filter(c=>c.name.length>1&&text.includes(c.name)&&status(c)!=='ok'&&!open.some(i=>i.item===c.id)).slice(0,4);
+}
+async function chatSend(q){
+ q=String(q||'').trim();if(!q||CHAT.busy||!CHAT.open)return;
+ const agent=CHAT.open,log=CHAT.log[agent],ctx=AGENTS[agent].ctx?agentContext():'';
+ log.push({role:'user',text:q});CHAT.busy=true;chatStore();renderChat();
+ const history=log.filter(m=>!m.err&&!m.local).slice(-20).map(m=>({role:m.role,text:m.text}));
+ try{
+  const r=REMOTE?await gs('askAgent',history,ctx,agent):await askLocal(history,ctx,agent);
+  log.push({role:'model',text:r.text,sources:r.sources||[],add:AGENTS[agent].ctx?chatSuggestAdd(r.text).map(c=>c.id):[]});
+ }catch(e){
+  const msg=String(e.message||e);
+  // מפתח לא תקין במצב מקומי: מוחקים אותו כדי שהצ'אט יבקש מפתח חדש.
+  if(!REMOTE&&/API key/i.test(msg)){try{localStorage.removeItem('hg-gemini-key')}catch(err){}log.pop();CHAT.keyErr=true}
+  else log.push({role:'model',err:true,text:'לא הצלחתי להגיע לסוכן: '+msg})}
+ CHAT.busy=false;chatStore();renderChat();
+}
+function renderChat(){
+ const el=$('#chat');if(!CHAT.open){el.innerHTML='';return}
+ const needKey=!REMOTE&&!localKey();
+ const open=activeList().filter(x=>!x.done);
+ const ag=AGENTS[CHAT.open],log=cm();
+ const msgs=log.map((m,i)=>`<div class="m ${m.err?'err':m.role}">${esc(m.text)}${m.sources?.length?`<div class="src">${m.sources.map(s=>`<a href="${esc(s.uri)}" target="_blank" rel="noopener">${esc(s.title||'מקור')}</a>`).join('')}</div>`:''}</div>${i===log.length-1&&m.add?.length?`<div class="acts">${m.add.filter(id=>byId(id)&&!open.some(x=>x.item===id)).map(id=>`<button data-a="chatAdd" data-id="${id}">+ ${esc(byId(id).name)} לרשימה</button>`).join('')}</div>`:''}`).join('');
+ const welcome=`<div class="m model">${esc(ag.welcome)}</div><div class="sugg">${ag.sugg.map(t=>`<button data-a="chatAsk" data-q="${esc(t)}">${esc(t)}</button>`).join('')}</div>`;
+ const keyNote=`${CHAT.keyErr?`<div class="m err">המפתח שנשמר לא תקין. הדביקו את המפתח החדש.</div>`:''}<div class="m model">האפליקציה פתוחה כקובץ מקומי, ולכן צריך להדביק מפתח Gemini API כדי לשוחח עם הסוכן. המפתח נשמר רק במכשיר הזה. כשהאפליקציה רצה דרך Apps Script, המפתח נלקח מהשרת.</div>`;
+ el.innerHTML=`<div class="chat" data-a="chatScrim"><div class="win" role="dialog" aria-modal="true" aria-label="${esc(ag.name)}">
+  <div class="top"><span class="av${ag.cls}">${svg(I.chat,22)}</span>
+   <span style="display:flex;flex-direction:column;flex:1"><b>${esc(ag.name)}</b><span class="sub">${esc(ag.sub)}</span></span>
+   ${!REMOTE&&!needKey?`<button class="btn link" data-a="chatKeyReset">החלפת מפתח</button>`:''}${log.length?`<button class="btn link" data-a="chatClear">ניקוי</button>`:''}<button class="sq" data-a="chatClose" aria-label="סגירה">${svg(I.x,22)}</button></div>
+  <div class="msgs" id="chatMsgs">${needKey?keyNote:msgs||welcome}${CHAT.busy?`<div class="typing">הסוכן כותב…</div>`:''}</div>
+  ${needKey?`<form data-f="chatKey"><input name="key" type="password" placeholder="מפתח Gemini API" autocomplete="off" required><button class="btn pri">שמירה</button></form>`
+   :`<form data-f="chat"><input id="chatIn" name="q" placeholder="כתבו שאלה…" autocomplete="off" ${CHAT.busy?'disabled':''}><button class="btn pri" ${CHAT.busy?'disabled':''}>שליחה</button></form>`}
+ </div></div>`;
+ const box=$('#chatMsgs');box.scrollTop=box.scrollHeight;
+ const inp=el.querySelector('form input');if(inp&&!CHAT.busy)inp.focus();
+}
+document.addEventListener('submit',e=>{const k=e.target.dataset.f;if(k!=='chat'&&k!=='chatKey')return;e.preventDefault();e.stopImmediatePropagation();const v=new FormData(e.target);
+ if(k==='chatKey'){const key=cleanKey(v.get('key'));try{if(key)localStorage.setItem('hg-gemini-key',key);else localStorage.removeItem('hg-gemini-key')}catch(err){}CHAT.keyErr=!key;renderChat()}else chatSend(v.get('q'))},true);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&CHAT.open){e.stopImmediatePropagation();A.chatClose()}},true);
 if(!S||S.v!==2){S=seed();firstSeed()}
 periodic();
 ui.route=(location.hash.slice(1)||'home').split('?')[0];

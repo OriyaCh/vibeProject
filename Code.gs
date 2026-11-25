@@ -241,3 +241,55 @@ function installTrigger() {
   ScriptApp.getProjectTriggers().forEach(function (t) { if (t.getHandlerFunction() === 'weeklyReminder') ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('weeklyReminder').timeBased().everyDays(1).atHour(6).create();
 }
+
+/* ---------- צ'אט עם הסוכן (Gemini) ----------
+ * מפתח ה-API נשמר ב־Script Properties בשם GEMINI_API_KEY (הגדרות הפרויקט ← מאפייני סקריפט), ולא בקוד.
+ * history: מערך של {role:'user'|'model', text}. context: תמונת מצב של המלאי והרשימה, נבנית בדפדפן.
+ */
+var GEMINI_MODEL = 'gemini-flash-lite-latest';
+// כל צ'אט באפליקציה הוא סוכן עם הנחיה משלו. ctx: האם לצרף את נתוני הבית. model: דגם משלו (ברירת מחדל GEMINI_MODEL).
+var AGENTS = {
+  home: { ctx: true, instruction: 'בכל פעם שהמשתמש ישאל על מלאי צריכה של תענה לו אם קיים או שצריך להוסיף לרשימת קניות' },
+  test: { ctx: false, model: 'gemini-3.1-flash-lite', instruction: 'כל שאלה שאתה מקבל תחזיר לי את המילה טסט' }
+};
+
+function askAgent(history, context, agentId) {
+  var agent = AGENTS[agentId] || AGENTS.home;
+  // מחלצים רק את המפתח עצמו, כדי שתווים נסתרים או טקסט שהודבק איתו לא ישברו את הבקשה.
+  var key = (String(PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY') || '').match(/[A-Za-z0-9._-]{20,}/) || [''])[0];
+  if (!key) throw new Error('חסר מפתח: הוסיפו את GEMINI_API_KEY במאפייני הסקריפט');
+  var body = {
+    systemInstruction: { parts: [{ text: agent.instruction + (agent.ctx ? '\n\nענה בעברית, בקצרה. אלה נתוני הבית העדכניים:\n' + context : '') }] },
+    contents: (history || []).slice(-20).map(function (m) { return { role: m.role === 'model' ? 'model' : 'user', parts: [{ text: String(m.text) }] }; }),
+    tools: [{ google_search: {} }],
+    generationConfig: { thinkingConfig: { thinkingLevel: 'MINIMAL' } }
+  };
+  var model = agent.model || GEMINI_MODEL;
+  var res = callGemini_(key, body, model);
+  // דגמים שלא תומכים ב־thinkingLevel מחזירים 400; מנסים שוב בלי ההגדרה.
+  if (res.getResponseCode() === 400 && /thinking/i.test(res.getContentText())) { delete body.generationConfig; res = callGemini_(key, body, model); }
+  // אם נגמרה המכסה של חיפוש Google, עונים בלי חיפוש (נתוני הבית ממילא נשלחים בהקשר).
+  if (res.getResponseCode() === 429) { delete body.tools; res = callGemini_(key, body, model); }
+  // 503 = הדגם עמוס אצל Google. מנסים שוב אחרי המתנה קצרה, ואם עדיין עמוס עוברים לדגם הרגיל.
+  var busy = function (r) { return r.getResponseCode() === 503 || r.getResponseCode() === 500; };
+  [1500, 3000].forEach(function (wait) { if (busy(res)) { Utilities.sleep(wait); res = callGemini_(key, body, model); } });
+  if (busy(res) && model !== GEMINI_MODEL) { model = GEMINI_MODEL; res = callGemini_(key, body, model); }
+  var data = JSON.parse(res.getContentText());
+  if (res.getResponseCode() !== 200) {
+    var msg = (data.error && data.error.message) || ('שגיאה ' + res.getResponseCode());
+    if (/API key/i.test(msg)) msg = 'המפתח ששמור במאפייני הסקריפט (GEMINI_API_KEY) לא תקין. מתחיל ב־' + key.slice(0, 8) + '…, באורך ' + key.length + ' תווים.';
+    throw new Error(msg);
+  }
+  var cand = (data.candidates || [])[0] || {};
+  var text = ((cand.content && cand.content.parts) || []).map(function (p) { return p.text || ''; }).join('').trim();
+  var sources = ((cand.groundingMetadata && cand.groundingMetadata.groundingChunks) || [])
+    .filter(function (c) { return c.web; }).slice(0, 4).map(function (c) { return { title: c.web.title, uri: c.web.uri }; });
+  return { text: text || 'לא התקבלה תשובה מהסוכן.', sources: sources };
+}
+
+function callGemini_(key, body, model) {
+  return UrlFetchApp.fetch('https://generativelanguage.googleapis.com/v1beta/models/' + (model || GEMINI_MODEL) + ':generateContent', {
+    method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+    headers: { 'x-goog-api-key': key }, payload: JSON.stringify(body)
+  });
+}
